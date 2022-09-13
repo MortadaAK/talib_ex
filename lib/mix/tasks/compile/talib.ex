@@ -6,7 +6,7 @@ defmodule Mix.Task.Compile.Talib do
       exit(1)
     else
       File.mkdir_p("priv")
-      {result, _error_code} = System.cmd("make", ["priv/talib.so"], stderr_to_stdout: true)
+      {result, _error_code} = System.cmd("make", [], stderr_to_stdout: true)
       IO.binwrite(result)
     end
 

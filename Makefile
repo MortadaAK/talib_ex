@@ -2,6 +2,11 @@ MIX = mix
 CFLAGS = -g -O3 -ansi -pedantic -Wall -Wextra
 ERLANG_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
 ERL_INTERFACE_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(erl_interface, lib)])' -s init stop -noshell)
+FILES =  $(shell ls c_src/func_*.c)
+FILES += 	c_src/talib_ex_functions.c \
+			c_src/talib_ex_util.c \
+			c_src/util.c \
+			c_src/talib.c
 CFLAGS += -I$(ERLANG_PATH)
 CC= gcc
 LDFLAGS += -lta_lib
@@ -25,14 +30,10 @@ ifneq ($(OS),Windows_NT)
 	LDFLAGS += -shared 
 endif
 
-
-
 .PHONY: all talib clean
 
 all: 
-	$(CC) -c $(CFLAGS) -o c_src/talib.o c_src/talib.c
-	$(CC) -c $(CFLAGS) -o c_src/util.o c_src/util.c
-	$(CC) c_src/util.o c_src/talib.o $(LDFLAGS) -o priv/talib.so
+	$(CC) $(CFLAGS) $(FILES) $(LDFLAGS) -o priv/talib.so
 
 clean:
 	$(MIX) clean
