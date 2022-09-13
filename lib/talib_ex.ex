@@ -29,22 +29,36 @@ defmodule TalibEx do
           close: list_of_numbers(),
           volume: list_of_numbers()
         ]
+  @type hlc :: [
+          high: list_of_numbers(),
+          low: list_of_numbers(),
+          close: list_of_numbers()
+        ]
 
-  # @spec acos([number()] | Range.t()) ::
-  #         {:ok, numbers_nan_list} | {:error, term}
-  # @doc "Vector Trigonometric ACos"
-  # def acos(list) do
-  #   Nif.nif_acos([close: Enum.to_list(list)], [:close])
-  # end
+  @spec acos(list_of_numbers) ::
+          {:ok, numbers_nan_list} | {:error, term}
+
+  defguardp int_2_to_100000(value) when is_integer(value) and value >= 2 and value <= 100_000
+
+  @doc "Vector Trigonometric ACos"
+  def acos(list) do
+    with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [result]} <- Nif.nif_acos(list) do
+      {:ok, result}
+    else
+      error ->
+        error
+    end
+  end
 
   @spec ad(hlcv) ::
           {:ok, numbers_nan_list} | {:error, term}
   @doc "Chaikin A/D Line"
   def ad(opts) do
-    case hlcv(opts) do
-      {:ok, %{volume: volume, low: low, high: high, close: close}} ->
-        Nif.nif_ad([open: [], high: high, low: low, close: close, volume: volume], [])
-
+    with {:ok, %{volume: volume, low: low, high: high, close: close}} <- hlcv(opts),
+         {:ok, [result]} <- Nif.nif_ad(high, low, close, volume) do
+      {:ok, result}
+    else
       error ->
         error
     end
@@ -53,10 +67,10 @@ defmodule TalibEx do
   @spec add(list_of_numbers(), list_of_numbers()) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Vector Arithmetic Add"
   def add(high, low) do
-    case load_lists([high: high, low: low], [:high, :low]) do
-      {:ok, %{high: high, low: low}} ->
-        Nif.nif_add([high: high, low: low], [])
-
+    with {:ok, %{high: high, low: low}} <- load_lists([high: high, low: low], [:high, :low]),
+         {:ok, [result]} <- Nif.nif_add(high, low) do
+      {:ok, result}
+    else
       error ->
         error
     end
@@ -67,19 +81,16 @@ defmodule TalibEx do
   @doc "Chaikin A/D Oscillator"
   def adosc(opts, other_params) do
     with {:fast_period, fast_period}
-         when is_integer(fast_period) and fast_period > 1 and fast_period <= 100_000 <-
+         when int_2_to_100000(fast_period) <-
            {:fast_period, Keyword.get(other_params, :fast_period)},
          {:slow_period, slow_period}
-         when is_integer(slow_period) and slow_period > 1 and slow_period <= 100_000 <-
+         when int_2_to_100000(slow_period) <-
            {:slow_period, Keyword.get(other_params, :slow_period)},
-         {:ok, %{high: high, low: low, close: close, volume: volume}} <- hlcv(opts) do
-      Nif.nif_adosc(
-        [high: high, low: low, close: close, volume: volume],
-        fast_period: fast_period,
-        slow_period: slow_period
-      )
+         {:ok, %{high: high, low: low, close: close, volume: volume}} <- hlcv(opts),
+         {:ok, [result]} <- Nif.nif_adosc(high, low, close, volume, fast_period, slow_period) do
+      {:ok, result}
     else
-      {option, nil} ->
+      {option, _} ->
         {:error, "#{option} is required and should be between 2 and 100,000"}
 
       error ->
@@ -87,35 +98,128 @@ defmodule TalibEx do
     end
   end
 
-  @spec sma([number()] | Range.t(), [{:window, pos_integer()}]) ::
+  @spec adx(hlc(), [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Average Directional Movement Index"
+  def adx(opts, other_params) do
+    with {:window, window}
+         when int_2_to_100000(window) <-
+           {:window, Keyword.get(other_params, :window)},
+         {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
+         {:ok, [result]} <- Nif.nif_adx(high, low, close, window) do
+      {:ok, result}
+    else
+      {option, _} ->
+        {:error, "#{option} is required and should be between 2 and 100,000"}
+
+      error ->
+        error
+    end
+  end
+
+  @spec adxr(hlc(), [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Average Directional Movement Index Rating"
+  def adxr(opts, other_params) do
+    with {:window, window}
+         when int_2_to_100000(window) <-
+           {:window, Keyword.get(other_params, :window)},
+         {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
+         {:ok, [result]} <- Nif.nif_adxr(high, low, close, window) do
+      {:ok, result}
+    else
+      {option, _} ->
+        {:error, "#{option} is required and should be between 2 and 100,000"}
+
+      error ->
+        error
+    end
+  end
+
+  @moving_average_types ~w(sma ema wma dema tema trima kama mama t3)a
+
+  @spec apo(list_of_numbers, [
+          {:fast_period, pos_integer()},
+          {:slow_period, pos_integer()},
+          {:moving_average_type,
+           :sma | :ema | :wma | :dema | :tema | :trima | :kama | :mama | :t3}
+        ]) :: {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Absolute Price Oscillator"
+  def apo(list, other_params) do
+    with {:fast_period, fast_period}
+         when int_2_to_100000(fast_period) <-
+           {:fast_period, Keyword.get(other_params, :fast_period)},
+         {:slow_period, slow_period}
+         when int_2_to_100000(slow_period) <-
+           {:slow_period, Keyword.get(other_params, :slow_period)},
+         {:moving_average_type, moving_average_type}
+         when moving_average_type in @moving_average_types <-
+           {:moving_average_type, Keyword.get(other_params, :moving_average_type)},
+         {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [result]} <-
+           Nif.nif_apo(
+             list,
+             fast_period,
+             slow_period,
+             Enum.find_index(@moving_average_types, &(&1 == moving_average_type))
+           ) do
+      {:ok, result}
+    else
+      {:moving_average_type, _} ->
+        {:error,
+         "moving_average_type is required and should be one of #{Enum.join(@moving_average_types, ", ")}"}
+
+      {option, _} ->
+        {:error, "#{option} is required and should be between 2 and 100,000"}
+
+      error ->
+        error
+    end
+  end
+
+  @spec aroon([{:high, list_of_numbers} | {:low, list_of_numbers} | {:window, pos_integer()}]) ::
+          {:ok, down :: numbers_nan_list(), up :: numbers_nan_list()} | {:error, term}
+  @doc "Absolute Price Oscillator"
+  def aroon(opts) do
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
+         {:ok, %{high: high, low: low}} <- load_lists(opts, [:high, :low]),
+         {:ok, [down, up]} <- Nif.nif_aroon(high, low, window) do
+      {:ok, down, up}
+    else
+      {option, _} ->
+        {:error, "#{option} is required and should be between 2 and 100,000"}
+
+      error ->
+        error
+    end
+  end
+
+  @spec sma(list_of_numbers, [{:window, pos_integer()}]) ::
           {:ok, numbers_nan_list} | {:error, term}
   @doc """
   Simple Moving Average
-
-  window: the window
   """
   def sma(list, opts \\ []) do
-    window = Keyword.get(opts, :window, 5)
-    Nif.nif_sma([open: Enum.to_list(list)], [:open, window: window])
-  end
-
-  @spec sqrt([number()] | Range.t()) ::
-          {:ok, numbers_nan_list} | {:error, term}
-  def sqrt(list) do
-    Nif.nif_sqrt([open: Enum.to_list(list)], [:open])
-  end
-
-  @spec adx(hlw, [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, :term}
-  @doc "Average Directional Movement Index"
-  def adx(opts, other_params) do
-    with {:ok, %{high: high, low: low, close: close}} <- load_lists(opts, [:high, :low, :close]),
-         {:window, window} when is_integer(window) and window > 2 and window <= 100_000 <-
-           {:window, Keyword.get(other_params, :window)} do
-      Nif.nif_adx([high: high, low: low, close: close], window: window)
+    with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:window, window} when is_integer(window) and window > 0 and window < 100_000 <-
+           Keyword.get(opts, :window),
+         {:ok, [result]} <- Nif.nif_sma(list, window) do
+      {:ok, result}
     else
       {:window, _} ->
-        {:error, "window is required and it should be between 2 and 100000"}
+        {:error, "window is required"}
 
+      error ->
+        error
+    end
+  end
+
+  @spec sqrt(list_of_numbers) ::
+          {:ok, numbers_nan_list} | {:error, term}
+  @doc "Vector Square Root"
+  def sqrt(list) do
+    with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [result]} <- Nif.nif_sqrt(list) do
+      {:ok, result}
+    else
       error ->
         error
     end
@@ -150,6 +254,7 @@ defmodule TalibEx do
     end
   end
 
+  defp hlc(opts), do: load_lists(opts, [:close, :high, :low])
   defp hlcv(opts), do: load_lists(opts, [:volume, :close, :high, :low])
   defp ohlc(opts), do: load_lists(opts, [:open, :close, :high, :low])
   defp ohlcv(opts), do: load_lists(opts, [:volume, :open, :close, :high, :low])

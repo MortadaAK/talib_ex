@@ -3,8 +3,15 @@
 
 #include "erl_nif.h"
 #include "ta_libc.h"
-#include "talib_ex_util.h"
 #include <stdbool.h>
+
+typedef struct
+{
+    ERL_NIF_TERM atom_nan;
+    ERL_NIF_TERM atom_ok;
+    ERL_NIF_TERM atom_error;
+
+} talib_st;
 
 ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *name);
 double *

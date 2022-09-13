@@ -26,5 +26,4 @@ talib_ex-*.tar
 /tmp/
 
 /c_src/*.o
-/c_src/func_*.c
 /priv/*.so

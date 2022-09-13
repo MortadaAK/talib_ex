@@ -2,11 +2,7 @@ MIX = mix
 CFLAGS = -g -O3 -ansi -pedantic -Wall -Wextra
 ERLANG_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
 ERL_INTERFACE_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(erl_interface, lib)])' -s init stop -noshell)
-FILES =  $(shell ls c_src/func_*.c)
-FILES += 	c_src/talib_ex_functions.c \
-			c_src/talib_ex_util.c \
-			c_src/util.c \
-			c_src/talib.c
+FILES =  $(shell ls c_src/*.c)
 CFLAGS += -I$(ERLANG_PATH)
 CC= gcc
 LDFLAGS += -lta_lib

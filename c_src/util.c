@@ -1,6 +1,6 @@
 #include "erl_nif.h"
 #include "ta_libc.h"
-#include "talib_ex_util.h"
+#include "util.h"
 #include <stdbool.h>
 
 ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *name)
