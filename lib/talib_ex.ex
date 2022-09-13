@@ -5,6 +5,11 @@ defmodule TalibEx do
   alias TalibEx.Nif
   @type numbers_nan_list :: [:nan | number()]
   @type list_of_numbers :: [number()] | Range.t()
+  @type hlw :: [
+          high: list_of_numbers(),
+          low: list_of_numbers(),
+          close: list_of_numbers()
+        ]
   @type hlcv :: [
           volume: list_of_numbers(),
           high: list_of_numbers(),
@@ -25,12 +30,12 @@ defmodule TalibEx do
           volume: list_of_numbers()
         ]
 
-  @spec acos([number()] | Range.t()) ::
-          {:ok, numbers_nan_list} | {:error, term}
-  @doc "Vector Trigonometric ACos"
-  def acos(list) do
-    Nif.nif_acos([close: Enum.to_list(list)], [])
-  end
+  # @spec acos([number()] | Range.t()) ::
+  #         {:ok, numbers_nan_list} | {:error, term}
+  # @doc "Vector Trigonometric ACos"
+  # def acos(list) do
+  #   Nif.nif_acos([close: Enum.to_list(list)], [:close])
+  # end
 
   @spec ad(hlcv) ::
           {:ok, numbers_nan_list} | {:error, term}
@@ -98,6 +103,22 @@ defmodule TalibEx do
           {:ok, numbers_nan_list} | {:error, term}
   def sqrt(list) do
     Nif.nif_sqrt([open: Enum.to_list(list)], [:open])
+  end
+
+  @spec adx(hlw, [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, :term}
+  @doc "Average Directional Movement Index"
+  def adx(opts, other_params) do
+    with {:ok, %{high: high, low: low, close: close}} <- load_lists(opts, [:high, :low, :close]),
+         {:window, window} when is_integer(window) and window > 2 and window <= 100_000 <-
+           {:window, Keyword.get(other_params, :window)} do
+      Nif.nif_adx([high: high, low: low, close: close], window: window)
+    else
+      {:window, _} ->
+        {:error, "window is required and it should be between 2 and 100000"}
+
+      error ->
+        error
+    end
   end
 
   defp load_lists(opts, fields) when is_map(opts), do: opts |> Map.to_list() |> load_lists(fields)
