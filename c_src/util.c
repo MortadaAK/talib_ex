@@ -16,6 +16,10 @@ ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *name)
 double *
 construct_array_from_list(ErlNifEnv *env, ERL_NIF_TERM opts, unsigned *len)
 {
+    int pos = 0;
+    double dp = 0;
+    long int ip = 0;
+    ERL_NIF_TERM val;
     double *arr = NULL;
     *len = 0;
     enif_get_list_length(env, opts, len);
@@ -25,12 +29,7 @@ construct_array_from_list(ErlNifEnv *env, ERL_NIF_TERM opts, unsigned *len)
 
     arr = (double *)enif_alloc((*len) * sizeof(double));
 
-    int pos = 0;
-    double dp = 0;
-    long int ip = 0;
-    ERL_NIF_TERM val;
-
-    while (enif_get_list_cell(env, opts, &val, &opts))
+        while (enif_get_list_cell(env, opts, &val, &opts))
     {
         if (enif_is_number(env, val))
         {

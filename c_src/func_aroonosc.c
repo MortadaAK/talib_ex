@@ -5,9 +5,9 @@
 #include <stdbool.h>
 
 ERL_NIF_TERM
-ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
+ex_aroonosc(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
-  talib_st *atoms =  enif_priv_data(env);
+  talib_st *atoms = enif_priv_data(env);
   int startIdx = 0;
   int endIdx = 0;
   unsigned inLen = 0;
@@ -19,14 +19,15 @@ ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
   ERL_NIF_TERM results;
   double *input0;
   double *input1;
+  int input2;
   double *out0;
-  if (argc != 2)
+  if (argc != 3)
   {
-    return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "should be called with 2", ERL_NIF_LATIN1));
+    return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "should be called with 3", ERL_NIF_LATIN1));
   }
   if (!enif_is_list(env, argv[0]))
   {
-  
+
     return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at 0 should be a list", ERL_NIF_LATIN1));
   }
 
@@ -34,13 +35,13 @@ ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
   if (tmpLen == 0)
   {
-    
+
     return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at 0 is an empty list", ERL_NIF_LATIN1));
   }
 
   if (inLen != 0 && tmpLen != inLen)
   {
-    
+
     return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at 0 is a list with different length", ERL_NIF_LATIN1));
   }
 
@@ -62,7 +63,7 @@ ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
   if (tmpLen == 0)
   {
-      if (input0 != NULL)
+    if (input0 != NULL)
     {
       enif_free(input0);
       input0 = NULL;
@@ -73,7 +74,7 @@ ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 
   if (inLen != 0 && tmpLen != inLen)
   {
-      if (input0 != NULL)
+    if (input0 != NULL)
     {
       enif_free(input0);
       input0 = NULL;
@@ -85,16 +86,33 @@ ex_add(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
   inLen = tmpLen;
   endIdx = tmpLen - 1;
 
-out0 = (double *)enif_alloc((inLen) * sizeof(double));
+  if (!enif_is_number(env, argv[2]))
+  {
+    if (input1 != NULL)
+    {
+      enif_free(input1);
+      input1 = NULL;
+    }
 
+    if (input0 != NULL)
+    {
+      enif_free(input0);
+      input0 = NULL;
+    }
 
+    return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at 2 should be an integer", ERL_NIF_LATIN1));
+  }
+  input2 = argv[2];
+
+  out0 = (double *)enif_alloc((inLen) * sizeof(double));
 
   /* call TA-Lib function */
-  retCode = TA_ADD(
+  retCode = TA_AROONOSC(
       startIdx,
       endIdx,
       input0,
       input1,
+      input2,
       &outBegIdx,
       &outNBElement,
       &out0[0]);
@@ -102,10 +120,12 @@ out0 = (double *)enif_alloc((inLen) * sizeof(double));
   /* generate results */
   if (retCode != TA_SUCCESS)
   {
-      /* generate error message */
-      TA_SetRetCodeInfo(retCode, &info);
-      results = enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, info.infoStr, ERL_NIF_LATIN1));
-  } else {
+    /* generate error message */
+    TA_SetRetCodeInfo(retCode, &info);
+    results = enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, info.infoStr, ERL_NIF_LATIN1));
+  }
+  else
+  {
     ERL_NIF_TERM values[1];
     values[0] = populate_output_double(env, atoms, outBegIdx, inLen, 0, out0);
 
@@ -113,23 +133,22 @@ out0 = (double *)enif_alloc((inLen) * sizeof(double));
   }
   /* clean up */
   if (input0 != NULL)
-    {
-      enif_free(input0);
-      input0 = NULL;
-    }
+  {
+    enif_free(input0);
+    input0 = NULL;
+  }
 
   if (input1 != NULL)
-    {
-      enif_free(input1);
-      input1 = NULL;
-    }
+  {
+    enif_free(input1);
+    input1 = NULL;
+  }
 
   if (out0 != NULL)
   {
     enif_free(out0);
     out0 = NULL;
   }
-
 
   /* return the results; */
   return results;

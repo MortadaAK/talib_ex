@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 ERL_NIF_TERM
-ex_acos(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
+ex_asin(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
   talib_st *atoms =  enif_priv_data(env);
   int startIdx = 0;
@@ -51,7 +51,7 @@ out0 = (double *)enif_alloc((inLen) * sizeof(double));
 
 
   /* call TA-Lib function */
-  retCode = TA_ACOS(
+  retCode = TA_ASIN(
       startIdx,
       endIdx,
       input0,

@@ -49,6 +49,8 @@ static ErlNifFunc funcs[] = {
 {"nif_adxr", 4, ex_adxr, 0}, 
 {"nif_apo", 4, ex_apo, 0}, 
 {"nif_aroon", 3, ex_aroon, 0}, 
+{"nif_aroonosc", 3, ex_aroonosc, 0}, 
+{"nif_asin", 1, ex_asin, 0}, 
 {"nif_sma", 2, ex_sma, 0}, 
 {"nif_sqrt", 1, ex_sqrt, 0}
 };

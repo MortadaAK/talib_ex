@@ -8,7 +8,7 @@ defmodule TalibEx.Nif do
     :talib_ex
     |> :code.priv_dir()
     |> Path.join("talib")
-    |> :erlang.load_nif(0)
+    |> :erlang.load_nif (0)
   end
 
   def nif_acos(_) do
@@ -41,6 +41,14 @@ defmodule TalibEx.Nif do
 
   def nif_aroon(_, _, _) do
     raise "nif_aroon/3 not implemented end"
+  end
+
+  def nif_aroonosc(_, _, _) do
+    raise "nif_aroonosc/3 not implemented end"
+  end
+
+  def nif_asin(_) do
+    raise "nif_asin/1 not implemented end"
   end
 
   def nif_sma(_, _) do

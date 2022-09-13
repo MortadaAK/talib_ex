@@ -177,7 +177,7 @@ defmodule TalibEx do
 
   @spec aroon([{:high, list_of_numbers} | {:low, list_of_numbers} | {:window, pos_integer()}]) ::
           {:ok, down :: numbers_nan_list(), up :: numbers_nan_list()} | {:error, term}
-  @doc "Absolute Price Oscillator"
+  @doc "Aroon"
   def aroon(opts) do
     with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
          {:ok, %{high: high, low: low}} <- load_lists(opts, [:high, :low]),
@@ -187,6 +187,36 @@ defmodule TalibEx do
       {option, _} ->
         {:error, "#{option} is required and should be between 2 and 100,000"}
 
+      error ->
+        error
+    end
+  end
+
+  @spec aroonosc([{:high, list_of_numbers} | {:low, list_of_numbers} | {:window, pos_integer()}]) ::
+          {:ok, down :: numbers_nan_list(), up :: numbers_nan_list()} | {:error, term}
+  @doc "Aroon Oscillator"
+  def aroonosc(opts) do
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
+         {:ok, %{high: high, low: low}} <- load_lists(opts, [:high, :low]),
+         {:ok, [result]} <- Nif.nif_aroonosc(high, low, window) do
+      {:ok, result}
+    else
+      {option, _} ->
+        {:error, "#{option} is required and should be between 2 and 100,000"}
+
+      error ->
+        error
+    end
+  end
+
+  @spec asin(list_of_numbers) ::
+          {:ok, numbers_nan_list} | {:error, term}
+  @doc "Vector Trigonometric ASin"
+  def asin(list) do
+    with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [result]} <- Nif.nif_asin(list) do
+      {:ok, result}
+    else
       error ->
         error
     end
