@@ -5,11 +5,6 @@ ERL_INTERFACE_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(erl_interf
 CFLAGS += -I$(ERLANG_PATH)
 CC= gcc
 LDFLAGS += -lta_lib
-# ifeq ($(wildcard deps/talib),)
-# 	TALIB_PATH = ../talib
-# else
-# 	TALIB_PATH = deps/talib
-# endif
 
 ifneq ($(OS),Windows_NT)
 	CFLAGS += -fPIC
@@ -34,19 +29,12 @@ endif
 
 .PHONY: all talib clean
 
-all: priv/talib.so
-
-c_src/%.o: c_src/%.c
-	$(CC) -c $(CFLAGS) -o $@ $<
-
-priv/%.so:
-	@mkdir -p priv
-	$(CC) $< $(LDFLAGS) -o $@
-
-priv/talib.so: c_src/talib.o
-
+all: 
+	$(CC) -c $(CFLAGS) -o c_src/talib.o c_src/talib.c
+	$(CC) -c $(CFLAGS) -o c_src/util.o c_src/util.c
+	$(CC) c_src/util.o c_src/talib.o $(LDFLAGS) -o priv/talib.so
 
 clean:
 	$(MIX) clean
-	$(RM) c_src/talib.o
-	$(RM) priv/talib.so
+	$(RM) c_src/*.o
+	$(RM) priv/*.so

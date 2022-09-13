@@ -25,5 +25,5 @@ talib_ex-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
-/c_src/talib.o
-/priv/talib.so
+/c_src/*.o
+/priv/*.so
