@@ -8,7 +8,7 @@ defmodule TalibEx.Nif do
     :talib_ex
     |> :code.priv_dir()
     |> Path.join("talib")
-    |> :erlang.load_nif (0)
+    |> :erlang.load_nif(0)
   end
 
   def nif_acos(_) do

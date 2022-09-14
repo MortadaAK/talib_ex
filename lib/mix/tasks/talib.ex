@@ -195,8 +195,8 @@ defmodule Mix.Tasks.Talib do
       TA_RetCode retCode;
       TA_RetCodeInfo info;
       ERL_NIF_TERM results;
-    #{Enum.map_join(vars, "\n", & &1.type)}
-    #{Enum.map_join(outputs, "\n", & &1.type)}
+    #{Enum.map_join(vars, "\n", & &1.typec)}
+    #{Enum.map_join(outputs, "\n", & &1.typec)}
       if (argc != #{inputs_length})
       {
         return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "should be called with #{inputs_length}", ERL_NIF_LATIN1));
@@ -263,14 +263,14 @@ defmodule Mix.Tasks.Talib do
     destroy = ""
 
     %{
-      type: "  int #{name};",
+      typec: "  int #{name};",
       declare: """
         if (!enif_is_number(env, argv[#{pos}]))
         {
           #{destroy_inputs(prev_vars)}
           return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} should be an integer", ERL_NIF_LATIN1));
         }
-        #{name} = argv[#{pos}];
+        enif_get_int(env, argv[#{pos}], &#{name});
       """,
       destroy: destroy,
       name: name
@@ -283,7 +283,8 @@ defmodule Mix.Tasks.Talib do
     destroy = ""
 
     %{
-      type: "  TA_MAType #{name};",
+      type: :ma_type,
+      typec: "  TA_MAType #{name};",
       declare: """
         if (!enif_is_number(env, argv[#{pos}])){
           #{destroy_inputs(prev_vars)}
@@ -338,8 +339,31 @@ defmodule Mix.Tasks.Talib do
         }
     """
 
+    check =
+      if Enum.any?(prev_vars, &(&1.type == :double_array)) do
+        """
+        if (inLen != 0 && tmpLen != inLen)
+        {
+          #{destroy_inputs(prev_vars)}
+          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} is a list with different length", ERL_NIF_LATIN1));
+        }
+        """
+      else
+        """
+        if (tmpLen == 0)
+        {
+          #{destroy_inputs(prev_vars)}
+          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} is an empty list", ERL_NIF_LATIN1));
+        }
+
+        inLen = tmpLen;
+        endIdx = tmpLen - 1;
+        """
+      end
+
     %{
-      type: "  double *#{name};",
+      type: :double_array,
+      typec: "  double *#{name};",
       declare: """
         if (!enif_is_list(env, argv[#{pos}]))
         {
@@ -349,20 +373,7 @@ defmodule Mix.Tasks.Talib do
 
         #{name} = construct_array_from_list(env, argv[#{pos}], &tmpLen);
 
-        if (tmpLen == 0)
-        {
-          #{destroy_inputs(prev_vars)}
-          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} is an empty list", ERL_NIF_LATIN1));
-        }
-
-        if (inLen != 0 && tmpLen != inLen)
-        {
-          #{destroy_inputs(prev_vars)}
-          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} is a list with different length", ERL_NIF_LATIN1));
-        }
-
-        inLen = tmpLen;
-        endIdx = tmpLen - 1;
+        #{check}
       """,
       destroy: destroy,
       name: name
@@ -379,7 +390,8 @@ defmodule Mix.Tasks.Talib do
     name = "out#{pos}"
 
     %{
-      type: "  double *#{name};",
+      type: :double_array,
+      typec: "  double *#{name};",
       declare: """
       #{name} = (double *)enif_alloc((inLen) * sizeof(double));
 
@@ -467,7 +479,7 @@ defmodule Mix.Tasks.Talib do
     :talib_ex
     |> :code.priv_dir()
     |> Path.join("talib")
-    |> :erlang.load_nif (0)
+    |> :erlang.load_nif(0)
   end
 #{Enum.join(nif_functions, "\n")}
 end

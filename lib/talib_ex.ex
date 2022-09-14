@@ -5,41 +5,19 @@ defmodule TalibEx do
   alias TalibEx.Nif
   @type numbers_nan_list :: [:nan | number()]
   @type list_of_numbers :: [number()] | Range.t()
-  @type hlw :: [
-          high: list_of_numbers(),
-          low: list_of_numbers(),
-          close: list_of_numbers()
-        ]
-  @type hlcv :: [
-          volume: list_of_numbers(),
-          high: list_of_numbers(),
-          low: list_of_numbers(),
-          close: list_of_numbers()
-        ]
-  @type ohlc :: [
-          open: list_of_numbers(),
-          high: list_of_numbers(),
-          low: list_of_numbers(),
-          close: list_of_numbers()
-        ]
-  @type ohlcv :: [
-          open: list_of_numbers(),
-          high: list_of_numbers(),
-          low: list_of_numbers(),
-          close: list_of_numbers(),
-          volume: list_of_numbers()
-        ]
-  @type hlc :: [
-          high: list_of_numbers(),
-          low: list_of_numbers(),
-          close: list_of_numbers()
-        ]
-
+  @type open :: {:open, list_of_numbers()}
+  @type high :: {:high, list_of_numbers()}
+  @type low :: {:low, list_of_numbers()}
+  @type close :: {:close, list_of_numbers()}
+  @type volume :: {:volume, list_of_numbers()}
+  @type fast_period :: {:fast_period, pos_integer}
+  @type slow_period :: {:slow_period, pos_integer}
+  @type window :: {:window, pos_integer}
   @spec acos(list_of_numbers) ::
           {:ok, numbers_nan_list} | {:error, term}
 
   defguardp int_2_to_100000(value) when is_integer(value) and value >= 2 and value <= 100_000
-
+  @numeric_message "is required and should be between 2 and 100,000"
   @doc "Vector Trigonometric ACos"
   def acos(list) do
     with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
@@ -51,7 +29,7 @@ defmodule TalibEx do
     end
   end
 
-  @spec ad(hlcv) ::
+  @spec ad([volume() | low() | high() | close()]) ::
           {:ok, numbers_nan_list} | {:error, term}
   @doc "Chaikin A/D Line"
   def ad(opts) do
@@ -59,6 +37,9 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_ad(high, low, close, volume) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       error ->
         error
     end
@@ -71,63 +52,73 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_add(high, low) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       error ->
         error
     end
   end
 
-  @spec adosc(hlcv(), [{:fast_period, pos_integer} | {:slow_period, pos_integer}]) ::
+  @spec adosc([fast_period() | slow_period() | high() | low() | close() | volume()]) ::
           {:ok, numbers_nan_list()} | {:error, term}
   @doc "Chaikin A/D Oscillator"
-  def adosc(opts, other_params) do
+  def adosc(opts) do
     with {:fast_period, fast_period}
          when int_2_to_100000(fast_period) <-
-           {:fast_period, Keyword.get(other_params, :fast_period)},
+           {:fast_period, Keyword.get(opts, :fast_period)},
          {:slow_period, slow_period}
          when int_2_to_100000(slow_period) <-
-           {:slow_period, Keyword.get(other_params, :slow_period)},
+           {:slow_period, Keyword.get(opts, :slow_period)},
          {:ok, %{high: high, low: low, close: close, volume: volume}} <- hlcv(opts),
          {:ok, [result]} <- Nif.nif_adosc(high, low, close, volume, fast_period, slow_period) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
     end
   end
 
-  @spec adx(hlc(), [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, term}
+  @spec adx([high() | low() | close() | window()]) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Average Directional Movement Index"
-  def adx(opts, other_params) do
+  def adx(opts) do
     with {:window, window}
          when int_2_to_100000(window) <-
-           {:window, Keyword.get(other_params, :window)},
+           {:window, Keyword.get(opts, :window)},
          {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
          {:ok, [result]} <- Nif.nif_adx(high, low, close, window) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
     end
   end
 
-  @spec adxr(hlc(), [{:window, pos_integer()}]) :: {:ok, numbers_nan_list()} | {:error, term}
+  @spec adxr([window() | low() | high() | close()]) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Average Directional Movement Index Rating"
-  def adxr(opts, other_params) do
-    with {:window, window}
-         when int_2_to_100000(window) <-
-           {:window, Keyword.get(other_params, :window)},
+  def adxr(opts) do
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
          {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
          {:ok, [result]} <- Nif.nif_adxr(high, low, close, window) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
@@ -163,12 +154,15 @@ defmodule TalibEx do
            ) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {:moving_average_type, _} ->
         {:error,
          "moving_average_type is required and should be one of #{Enum.join(@moving_average_types, ", ")}"}
 
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
@@ -184,8 +178,11 @@ defmodule TalibEx do
          {:ok, [down, up]} <- Nif.nif_aroon(high, low, window) do
       {:ok, down, up}
     else
+      {:error, error} ->
+        {:error, error}
+
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
@@ -201,8 +198,11 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_aroonosc(high, low, window) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {option, _} ->
-        {:error, "#{option} is required and should be between 2 and 100,000"}
+        {:error, "#{option} #{@numeric_message}"}
 
       error ->
         error
@@ -217,6 +217,9 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_asin(list) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       error ->
         error
     end
@@ -229,11 +232,14 @@ defmodule TalibEx do
   """
   def sma(list, opts \\ []) do
     with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
-         {:window, window} when is_integer(window) and window > 0 and window < 100_000 <-
-           Keyword.get(opts, :window),
+         {:window, window} when int_2_to_100000(window) <-
+           {:window, Keyword.get(opts, :window, 5)},
          {:ok, [result]} <- Nif.nif_sma(list, window) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       {:window, _} ->
         {:error, "window is required"}
 
@@ -250,6 +256,9 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_sqrt(list) do
       {:ok, result}
     else
+      {:error, error} ->
+        {:error, error}
+
       error ->
         error
     end

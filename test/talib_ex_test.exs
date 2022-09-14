@@ -182,7 +182,19 @@ defmodule TalibExTest do
 
   describe "acos/1" do
     test "should return a list" do
-      assert {} = TalibEx.Nif.nif_acos(@ohlcv, [:close, close: Keyword.get(@ohlcv, :close)])
+      assert {:ok,
+              [
+                0.0,
+                1.0471975511965976,
+                0.0,
+                1.0471975511965976,
+                1.3694384060045657,
+                1.266103672779499,
+                1.0471975511965976,
+                0.6435011087932843,
+                0.45102681179626236,
+                1.0471975511965976
+              ]} = TalibEx.acos([1, 0.5, 1, 0.5, 0.2, 0.3, 0.5, 0.8, 0.9, 0.5])
     end
   end
 
@@ -240,15 +252,15 @@ defmodule TalibExTest do
     end
   end
 
-  describe "adosc/2" do
+  describe "adosc/1" do
     test "should require fast_period" do
       assert {:error, "fast_period is required and should be between 2 and 100,000"} =
-               TalibEx.adosc(@ohlcv, slow_period: 10)
+               TalibEx.adosc([{:slow_period, 10} | @ohlcv])
     end
 
     test "should require slow_period" do
       assert {:error, "slow_period is required and should be between 2 and 100,000"} =
-               TalibEx.adosc(@ohlcv, fast_period: 10)
+               TalibEx.adosc([{:fast_period, 10} | @ohlcv])
     end
 
     test "should return a list" do
@@ -289,14 +301,14 @@ defmodule TalibExTest do
                  32_702_359.3902051,
                  38_471_724.142064676
                ]
-             } = TalibEx.adosc(@ohlcv, fast_period: 10, slow_period: 25)
+             } = TalibEx.adosc([{:fast_period, 10}, {:slow_period, 25} | @ohlcv])
     end
   end
 
-  describe "adx/2" do
+  describe "adx/1" do
     test "should require window" do
-      assert {:error, "window is required and it should be between 2 and 100000"} =
-               TalibEx.adx(@ohlcv, [])
+      assert {:error, "window is required and should be between 2 and 100,000"} =
+               TalibEx.adx(@ohlcv)
     end
 
     test "should return a list" do
@@ -337,13 +349,135 @@ defmodule TalibExTest do
                  78.41576211831782,
                  86.19329655620886
                ]
-             } = TalibEx.adx(@ohlcv, window: 10)
+             } = TalibEx.adx([{:window, 2} | @ohlcv])
+    end
+  end
+
+  describe "adxr/1" do
+    test "should require window" do
+      assert {:error, "window is required and should be between 2 and 100,000"} =
+               TalibEx.adxr(@ohlcv)
+    end
+
+    test "should return a list" do
+      assert {
+               :ok,
+               [
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 66.3409294719627,
+                 57.684213897617454,
+                 46.049376329991084,
+                 30.11079665578637,
+                 28.502056127271228,
+                 37.742350291366826,
+                 49.670563173987375,
+                 63.6066386456817,
+                 78.98238502340045,
+                 63.863256133267214,
+                 46.35677192803406,
+                 50.899351755731125,
+                 57.963249819868025,
+                 57.166804576214886,
+                 45.24751128791158,
+                 49.154739182895696,
+                 50.9730072517592,
+                 40.7435810892271,
+                 44.56293493779823,
+                 54.14295033065372,
+                 58.93295802708147,
+                 69.66173410722179,
+                 83.73539162240843,
+                 72.71200816971125,
+                 54.688889718643736,
+                 56.578329674719996,
+                 65.11341346485816,
+                 74.05831754302821,
+                 82.30452933726335
+               ]
+             } = TalibEx.adxr([{:window, 2} | @ohlcv])
+    end
+  end
+
+  describe "apo/2" do
+    test "should require fast_period" do
+      assert {:error, "fast_period is required and should be between 2 and 100,000"} =
+               TalibEx.apo(1..10, slow_period: 10, moving_average_type: :sma)
+    end
+
+    test "should require slow_period" do
+      assert {:error, "slow_period is required and should be between 2 and 100,000"} =
+               TalibEx.apo(1..10, fast_period: 10, moving_average_type: :sma)
+    end
+
+    test "should require moving_average_type" do
+      assert {:error,
+              "moving_average_type is required and should be one of sma, ema, wma, dema, tema, trima, kama, mama, t3"} =
+               TalibEx.apo(1..10, fast_period: 10, slow_period: 25)
+    end
+
+    test "should return a list" do
+      for mvt <- ~w(sma ema wma dema tema trima kama mama t3)a do
+        assert {:ok, [_, _, _, _, _, _, _, _, _, _]} =
+                 TalibEx.apo(1..10, fast_period: 10, slow_period: 25, moving_average_type: mvt)
+      end
+    end
+  end
+
+  describe "aroon/1" do
+    test "should require high" do
+      assert {:error, "expected (high, low) missing high"} = TalibEx.aroon(window: 5, low: 1..10)
+    end
+
+    test "should require low" do
+      assert {:error, "expected (high, low) missing low"} = TalibEx.aroon(window: 5, high: 1..10)
+    end
+
+    test "should require window" do
+      assert {:error, "window is required and should be between 2 and 100,000"} =
+               TalibEx.aroon(high: 3..12, low: 1..10)
+    end
+
+    test "should return down and up as lists" do
+      assert {:ok, [:nan, :nan, :nan, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
+               TalibEx.aroon(high: 3..12, low: 1..10, window: 3)
+    end
+  end
+
+  describe "aroonosc/1" do
+    test "should require high" do
+      assert {:error, "expected (high, low) missing high"} =
+               TalibEx.aroonosc(window: 5, low: 1..10)
+    end
+
+    test "should require low" do
+      assert {:error, "expected (high, low) missing low"} =
+               TalibEx.aroonosc(window: 5, high: 1..10)
+    end
+
+    test "should require window" do
+      assert {:error, "window is required and should be between 2 and 100,000"} =
+               TalibEx.aroonosc(high: 3..12, low: 1..10)
+    end
+
+    test "should return down and up as lists" do
+      assert {:ok, [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
+               TalibEx.aroonosc(high: 3..12, low: 1..10, window: 3)
+    end
+  end
+
+  describe "asin/1" do
+    test "should return a list" do
+      assert nil = TalibEx.asin([1012.0, 1022.00, 1212.0])
     end
   end
 
   describe "sma/2" do
     test "should return a list" do
-      assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma([1, 2, 3, 4], window: 2)
+      assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma([1.0, 2.0, 3.0, 4.0], window: 2)
     end
 
     test "should default window to 5" do
@@ -353,7 +487,7 @@ defmodule TalibExTest do
 
     test "should accept range" do
       assert {:ok, [:nan, :nan, :nan, :nan, 3.0, 4.0, 5.0, 6.0, 7.0]} ==
-               TalibEx.sma(1..9)
+               TalibEx.sma(1..9, window: 5)
     end
   end
 
