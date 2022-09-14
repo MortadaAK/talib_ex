@@ -71,7 +71,7 @@ defmodule Mix.Tasks.Talib do
         %{name: :close, type: :double_array},
         %{name: :window, type: :integer}
       ],
-      outputs: [%{type: :double_array}]
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "apo",
@@ -189,7 +189,7 @@ defmodule Mix.Tasks.Talib do
         %{name: :window, type: :integer}
       ],
       outputs: [
-        %{type: :double_array}
+        %{name: :list, type: :double_array}
       ]
     },
     %{
@@ -276,7 +276,6 @@ defmodule Mix.Tasks.Talib do
 
   defp build_function(%{name: name, doc: doc, target: target, inputs: inputs, outputs: outputs}) do
     vars = declare_inputs(inputs)
-    outputs = declare_outputs(outputs)
     inputs_length = length(inputs)
     outputs_length = length(outputs)
 
@@ -290,6 +289,8 @@ defmodule Mix.Tasks.Talib do
         outputs_length: outputs_length,
         target: target
       })
+
+    outputs = declare_outputs(outputs)
 
     content =
       build_c_function(%{
@@ -357,6 +358,7 @@ defmodule Mix.Tasks.Talib do
       end)
 
     """
+    @dialyzer {:nowarn_function, #{name}: 1}
     @spec #{name}([#{Enum.join(inputs_spec, "| ")}]) :: {:ok, #{Enum.join(outputs_spec, ", ")}} | {:error,term()}
     @doc "#{doc}"
     def #{name}(params) do
