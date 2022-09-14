@@ -13,6 +13,11 @@ defmodule TalibEx do
   @type fast_period :: {:fast_period, pos_integer}
   @type slow_period :: {:slow_period, pos_integer}
   @type window :: {:window, pos_integer}
+  @type moving_average_type ::
+          {:moving_average_type,
+           :sma | :ema | :wma | :dema | :tema | :trima | :kama | :mama | :t3}
+  @moving_average_types ~w(sma ema wma dema tema trima kama mama t3)a
+
   @spec acos(list_of_numbers) ::
           {:ok, numbers_nan_list} | {:error, term}
 
@@ -24,8 +29,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_acos(list) do
       {:ok, result}
     else
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -37,11 +41,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_ad(high, low, close, volume) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -52,11 +52,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_add(high, low) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -64,45 +60,27 @@ defmodule TalibEx do
           {:ok, numbers_nan_list()} | {:error, term}
   @doc "Chaikin A/D Oscillator"
   def adosc(opts) do
-    with {:fast_period, fast_period}
-         when int_2_to_100000(fast_period) <-
+    with {:fast_period, fast_period} when int_2_to_100000(fast_period) <-
            {:fast_period, Keyword.get(opts, :fast_period)},
-         {:slow_period, slow_period}
-         when int_2_to_100000(slow_period) <-
+         {:slow_period, slow_period} when int_2_to_100000(slow_period) <-
            {:slow_period, Keyword.get(opts, :slow_period)},
          {:ok, %{high: high, low: low, close: close, volume: volume}} <- hlcv(opts),
          {:ok, [result]} <- Nif.nif_adosc(high, low, close, volume, fast_period, slow_period) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
   @spec adx([high() | low() | close() | window()]) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Average Directional Movement Index"
   def adx(opts) do
-    with {:window, window}
-         when int_2_to_100000(window) <-
-           {:window, Keyword.get(opts, :window)},
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
          {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
          {:ok, [result]} <- Nif.nif_adx(high, low, close, window) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -114,32 +92,20 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_adxr(high, low, close, window) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
-
-  @moving_average_types ~w(sma ema wma dema tema trima kama mama t3)a
 
   @spec apo(list_of_numbers, [
           fast_period()
           | slow_period()
-          | {:moving_average_type,
-             :sma | :ema | :wma | :dema | :tema | :trima | :kama | :mama | :t3}
+          | moving_average_type()
         ]) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Absolute Price Oscillator"
   def apo(list, other_params) do
-    with {:fast_period, fast_period}
-         when int_2_to_100000(fast_period) <-
+    with {:fast_period, fast_period} when int_2_to_100000(fast_period) <-
            {:fast_period, Keyword.get(other_params, :fast_period)},
-         {:slow_period, slow_period}
-         when int_2_to_100000(slow_period) <-
+         {:slow_period, slow_period} when int_2_to_100000(slow_period) <-
            {:slow_period, Keyword.get(other_params, :slow_period)},
          {:moving_average_type, moving_average_type}
          when moving_average_type in @moving_average_types <-
@@ -150,22 +116,11 @@ defmodule TalibEx do
              list,
              fast_period,
              slow_period,
-             Enum.find_index(@moving_average_types, &(&1 == moving_average_type))
+             resolve_moving_average_type(moving_average_type)
            ) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {:moving_average_type, _} ->
-        {:error,
-         "moving_average_type is required and should be one of #{Enum.join(@moving_average_types, ", ")}"}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -178,14 +133,7 @@ defmodule TalibEx do
          {:ok, [down, up]} <- Nif.nif_aroon(high, low, window) do
       {:ok, down, up}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -198,14 +146,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_aroonosc(high, low, window) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -217,11 +158,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_asin(list) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -233,11 +170,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_atan(list) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -250,14 +183,50 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_atr(high, low, close, window) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
+      error -> handle_error(error)
+    end
+  end
 
-      {option, _} ->
-        {:error, "#{option} #{@numeric_message}"}
+  @spec avgprice([high() | low() | close() | open()]) ::
+          {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Average Price"
+  def avgprice(opts) do
+    with {:ok, %{high: high, low: low, close: close, open: open}} <- ohlc(opts),
+         {:ok, [result]} <- Nif.nif_avgprice(open, high, low, close) do
+      {:ok, result}
+    else
+      error -> handle_error(error)
+    end
+  end
 
-      error ->
-        error
+  @spec bbands(list_of_numbers(), [
+          window() | {:np_dev_up, number()} | {:np_dev_down, number()} | moving_average_type()
+        ]) ::
+          {:ok, upper :: numbers_nan_list(), middle :: numbers_nan_list(),
+           lower :: numbers_nan_list()}
+          | {:error, term}
+  @doc "Bollinger Bands"
+  def bbands(list, opts) do
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
+         {:np_dev_up, np_dev_up} when is_number(np_dev_up) <-
+           {:np_dev_up, Keyword.get(opts, :np_dev_up)},
+         {:np_dev_down, np_dev_down} when is_number(np_dev_down) <-
+           {:np_dev_down, Keyword.get(opts, :np_dev_down)},
+         {:moving_average_type, moving_average_type}
+         when moving_average_type in @moving_average_types <-
+           {:moving_average_type, Keyword.get(opts, :moving_average_type)},
+         {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [upper, middle, lower]} <-
+           Nif.nif_bbands(
+             list,
+             window,
+             np_dev_up,
+             np_dev_down,
+             resolve_moving_average_type(moving_average_type)
+           ) do
+      {:ok, upper, middle, lower}
+    else
+      error -> handle_error(error)
     end
   end
 
@@ -273,14 +242,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_sma(list, window) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      {:window, _} ->
-        {:error, "window is required"}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -292,11 +254,7 @@ defmodule TalibEx do
          {:ok, [result]} <- Nif.nif_sqrt(list) do
       {:ok, result}
     else
-      {:error, error} ->
-        {:error, error}
-
-      error ->
-        error
+      error -> handle_error(error)
     end
   end
 
@@ -341,183 +299,21 @@ defmodule TalibEx do
     end
   end
 
-  def opts do
-    [
-      open: [
-        76.09,
-        76.14,
-        76.75,
-        77.1,
-        77.26,
-        78.28,
-        77.69,
-        78.06,
-        78.09,
-        78.72,
-        78.02,
-        78.49,
-        79.56,
-        79.47,
-        79.32,
-        79,
-        78.88,
-        78.88,
-        78.74,
-        78.25,
-        78.89,
-        79.13,
-        79.55,
-        78.72,
-        78.7,
-        78.74,
-        77.4,
-        77.8,
-        78.41,
-        78.74,
-        79.73,
-        79.83,
-        80
-      ],
-      high: [
-        76.44,
-        76.84,
-        77.06,
-        77.34,
-        77.96,
-        78.32,
-        78.11,
-        78.25,
-        78.14,
-        78.72,
-        78.47,
-        79.47,
-        79.69,
-        79.54,
-        79.41,
-        79.25,
-        79,
-        79.36,
-        79.21,
-        79.09,
-        79.72,
-        79.76,
-        79.72,
-        79.51,
-        79.35,
-        78.81,
-        77.44,
-        78.79,
-        79.29,
-        79.79,
-        80.11,
-        80.42,
-        80.87
-      ],
-      low: [
-        75.54,
-        75.93,
-        76.73,
-        76.05,
-        77.23,
-        77.92,
-        77.59,
-        77.85,
-        77.64,
-        77.67,
-        77.98,
-        78.33,
-        79.36,
-        78.95,
-        78.46,
-        78.57,
-        78.4,
-        78.85,
-        78.59,
-        78,
-        78.85,
-        79.06,
-        78.3,
-        78.65,
-        78.67,
-        77.19,
-        76.35,
-        77.79,
-        78.4,
-        78.68,
-        79.38,
-        79.79,
-        79.95
-      ],
-      close: [
-        75.9,
-        76.71,
-        76.84,
-        76.93,
-        77.83,
-        78.21,
-        78.06,
-        78.01,
-        78.06,
-        77.85,
-        78.37,
-        79.31,
-        79.5,
-        78.98,
-        78.83,
-        78.83,
-        78.56,
-        79.17,
-        79.07,
-        78.88,
-        79.68,
-        79.65,
-        78.72,
-        79.4,
-        78.74,
-        77.22,
-        76.98,
-        78.61,
-        79.23,
-        79.79,
-        79.48,
-        80.38,
-        80.84
-      ],
-      volume: [
-        27_209_900,
-        27_118_600,
-        17_809_700,
-        27_715_100,
-        25_141_500,
-        27_604_400,
-        28_132_900,
-        18_310_700,
-        16_763_000,
-        25_704_300,
-        27_174_300,
-        31_645_300,
-        26_280_900,
-        26_181_500,
-        30_305_000,
-        21_871_300,
-        22_723_600,
-        22_406_900,
-        24_896_000,
-        27_997_900,
-        33_024_100,
-        25_466_800,
-        42_970_800,
-        22_852_700,
-        20_227_100,
-        43_494_500,
-        64_489_900,
-        47_812_400,
-        25_214_100,
-        31_438_600,
-        38_446_600,
-        46_661_000,
-        31_916_600
-      ]
-    ]
-  end
+  defp resolve_moving_average_type(type),
+    do: Enum.find_index(@moving_average_types, &(&1 == type))
+
+  defp handle_error({:moving_average_type, _}),
+    do:
+      {:error,
+       "moving_average_type is required and should be one of #{Enum.join(@moving_average_types, ", ")}"}
+
+  defp handle_error({:error, error}) when is_list(error),
+    do: {:error, List.to_string(error)}
+
+  defp handle_error({:error, error}), do: {:error, error}
+
+  defp handle_error({option, _}) when is_atom(option) and option not in [:ok, :error],
+    do: {:error, "#{option} #{@numeric_message}"}
+
+  defp handle_error(error), do: error
 end

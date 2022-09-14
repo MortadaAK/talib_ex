@@ -134,6 +134,35 @@ defmodule Mix.Tasks.Talib do
       ]
     },
     %{
+      name: "avgprice",
+      target: "TA_AVGPRICE",
+      inputs: [
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :double_array}
+      ],
+      outputs: [
+        %{type: :double_array}
+      ]
+    },
+    %{
+      name: "bbands",
+      target: "TA_BBANDS",
+      inputs: [
+        %{type: :double_array},
+        %{type: :integer},
+        %{type: :double},
+        %{type: :double},
+        %{type: :ma_type}
+      ],
+      outputs: [
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :double_array}
+      ]
+    },
+    %{
       name: "sma",
       target: "TA_SMA",
       inputs: [
@@ -294,6 +323,26 @@ defmodule Mix.Tasks.Talib do
           return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} should be an integer", ERL_NIF_LATIN1));
         }
         enif_get_int(env, argv[#{pos}], &#{name});
+      """,
+      destroy: destroy,
+      name: name
+    }
+  end
+
+  defp declare_input(%{type: :double}, pos, prev_vars) do
+    name = "input#{pos}"
+
+    destroy = ""
+
+    %{
+      typec: "  double #{name};",
+      declare: """
+        if (!enif_is_number(env, argv[#{pos}]))
+        {
+          #{destroy_inputs(prev_vars)}
+          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "element at #{pos} should be an double", ERL_NIF_LATIN1));
+        }
+        enif_get_double(env, argv[#{pos}], &#{name});
       """,
       destroy: destroy,
       name: name

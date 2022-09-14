@@ -59,6 +59,14 @@ defmodule TalibEx.Nif do
     raise "nif_atr/4 not implemented end"
   end
 
+  def nif_avgprice(_, _, _, _) do
+    raise "nif_avgprice/4 not implemented end"
+  end
+
+  def nif_bbands(_, _, _, _, _) do
+    raise "nif_bbands/5 not implemented end"
+  end
+
   def nif_sma(_, _) do
     raise "nif_sma/2 not implemented end"
   end

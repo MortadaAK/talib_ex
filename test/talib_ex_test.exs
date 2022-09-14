@@ -525,6 +525,63 @@ defmodule TalibExTest do
     end
   end
 
+  describe "avgprice/1" do
+    test "should return a list" do
+      assert {
+               :ok,
+               [
+                 75.9925,
+                 76.405,
+                 76.845,
+                 76.85499999999999,
+                 77.57,
+                 78.1825,
+                 77.8625,
+                 78.0425,
+                 77.9825,
+                 78.24,
+                 78.21,
+                 78.9,
+                 79.5275,
+                 79.23500000000001,
+                 79.005,
+                 78.9125,
+                 78.71000000000001,
+                 79.065,
+                 78.9025,
+                 78.555,
+                 79.285,
+                 79.4,
+                 79.07249999999999,
+                 79.07000000000001,
+                 78.865,
+                 77.99,
+                 77.04249999999999,
+                 78.2475,
+                 78.83250000000001,
+                 79.25000000000001,
+                 79.67500000000001,
+                 80.105,
+                 80.41499999999999
+               ]
+             } = TalibEx.avgprice(@ohlcv)
+    end
+  end
+
+  describe "bbands/2" do
+    test "should return a list" do
+      assert {:ok, [:nan, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1],
+              [:nan, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5],
+              [:nan, 1.4, 2.4, 3.4, 4.4, 5.4, 6.4, 7.4, 8.4, 9.4]} =
+               TalibEx.bbands(1..10,
+                 window: 2,
+                 np_dev_down: 0.2,
+                 np_dev_up: 1.2,
+                 moving_average_type: :sma
+               )
+    end
+  end
+
   describe "sma/2" do
     test "should return a list" do
       assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma([1.0, 2.0, 3.0, 4.0], window: 2)
