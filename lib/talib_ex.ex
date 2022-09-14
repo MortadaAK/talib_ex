@@ -233,6 +233,23 @@ defmodule TalibEx do
     Nif.nif_bop(open, high, low, close)
   end
 
+  @dialyzer {:nowarn_function, cci: 1}
+  @spec cci([
+          {:high, [number()]}
+          | {:low, [number()]}
+          | {:close, [number()]}
+          | {:window, pos_integer()}
+        ]) :: {:ok, list :: [number() | :nan]} | {:error, term()}
+  @doc "Commodity Channel Index"
+  def cci(params) do
+    high = Keyword.fetch!(params, :high)
+    low = Keyword.fetch!(params, :low)
+    close = Keyword.fetch!(params, :close)
+    window = Keyword.fetch!(params, :window)
+
+    Nif.nif_cci(high, low, close, window)
+  end
+
   @dialyzer {:nowarn_function, sma: 1}
   @spec sma([{:list, [number()]} | {:window, pos_integer()}]) ::
           {:ok, list :: [number() | :nan]} | {:error, term()}

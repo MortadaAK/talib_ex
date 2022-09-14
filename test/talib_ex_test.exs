@@ -185,16 +185,16 @@ defmodule TalibExTest do
       assert {:ok,
               [
                 0.0,
-                1.0471975511965976,
+                1.0471975511965979,
                 0.0,
-                1.0471975511965976,
-                1.3694384060045657,
-                1.266103672779499,
-                1.0471975511965976,
+                1.0471975511965979,
+                1.369438406004566,
+                1.2661036727794992,
+                1.0471975511965979,
                 0.6435011087932843,
                 0.45102681179626236,
-                1.0471975511965976
-              ]} = TalibEx.acos([1, 0.5, 1, 0.5, 0.2, 0.3, 0.5, 0.8, 0.9, 0.5])
+                1.0471975511965979
+              ]} = TalibEx.acos(list: [1, 0.5, 1, 0.5, 0.2, 0.3, 0.5, 0.8, 0.9, 0.5])
     end
   end
 
@@ -241,28 +241,19 @@ defmodule TalibExTest do
     end
   end
 
-  describe "add/2" do
+  describe "add/1" do
     test "should return a list" do
       assert {:ok, [12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0]} =
-               TalibEx.add(1..9, 11..19)
+               TalibEx.add(list1: Enum.to_list(1..9), list2: Enum.to_list(11..19))
     end
 
     test "should return error when the lists are not the same length" do
-      assert {:error, :all_lists_should_have_same_length} = TalibEx.add(1..9, 1..19)
+      assert {:error, 'list2 is a list with different length'} =
+               TalibEx.add(list1: Enum.to_list(1..9), list2: Enum.to_list(1..19))
     end
   end
 
   describe "adosc/1" do
-    test "should require fast_period" do
-      assert {:error, "fast_period is required and should be between 2 and 100,000"} =
-               TalibEx.adosc([{:slow_period, 10} | @ohlcv])
-    end
-
-    test "should require slow_period" do
-      assert {:error, "slow_period is required and should be between 2 and 100,000"} =
-               TalibEx.adosc([{:fast_period, 10} | @ohlcv])
-    end
-
     test "should return a list" do
       assert {
                :ok,
@@ -306,11 +297,6 @@ defmodule TalibExTest do
   end
 
   describe "adx/1" do
-    test "should require window" do
-      assert {:error, "window is required and should be between 2 and 100,000"} =
-               TalibEx.adx(@ohlcv)
-    end
-
     test "should return a list" do
       assert {
                :ok,
@@ -354,11 +340,6 @@ defmodule TalibExTest do
   end
 
   describe "adxr/1" do
-    test "should require window" do
-      assert {:error, "window is required and should be between 2 and 100,000"} =
-               TalibEx.adxr(@ohlcv)
-    end
-
     test "should return a list" do
       assert {
                :ok,
@@ -401,85 +382,46 @@ defmodule TalibExTest do
     end
   end
 
-  describe "apo/2" do
-    test "should require fast_period" do
-      assert {:error, "fast_period is required and should be between 2 and 100,000"} =
-               TalibEx.apo(1..10, slow_period: 10, moving_average_type: :sma)
-    end
-
-    test "should require slow_period" do
-      assert {:error, "slow_period is required and should be between 2 and 100,000"} =
-               TalibEx.apo(1..10, fast_period: 10, moving_average_type: :sma)
-    end
-
-    test "should require moving_average_type" do
-      assert {:error,
-              "moving_average_type is required and should be one of sma, ema, wma, dema, tema, trima, kama, mama, t3"} =
-               TalibEx.apo(1..10, fast_period: 10, slow_period: 25)
-    end
-
+  describe "apo/1" do
     test "should return a list" do
       for mvt <- ~w(sma ema wma dema tema trima kama mama t3)a do
         assert {:ok, [_, _, _, _, _, _, _, _, _, _]} =
-                 TalibEx.apo(1..10, fast_period: 10, slow_period: 25, moving_average_type: mvt)
+                 TalibEx.apo(
+                   list: Enum.to_list(1..10),
+                   fast_period: 10,
+                   slow_period: 25,
+                   moving_average_type: mvt
+                 )
       end
     end
   end
 
   describe "aroon/1" do
-    test "should require high" do
-      assert {:error, "expected (high, low) missing high"} = TalibEx.aroon(window: 5, low: 1..10)
-    end
-
-    test "should require low" do
-      assert {:error, "expected (high, low) missing low"} = TalibEx.aroon(window: 5, high: 1..10)
-    end
-
-    test "should require window" do
-      assert {:error, "window is required and should be between 2 and 100,000"} =
-               TalibEx.aroon(high: 3..12, low: 1..10)
-    end
-
     test "should return down and up as lists" do
       assert {:ok, [:nan, :nan, :nan, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
               [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
-               TalibEx.aroon(high: 3..12, low: 1..10, window: 3)
+               TalibEx.aroon(high: Enum.to_list(3..12), low: Enum.to_list(1..10), window: 3)
     end
   end
 
   describe "aroonosc/1" do
-    test "should require high" do
-      assert {:error, "expected (high, low) missing high"} =
-               TalibEx.aroonosc(window: 5, low: 1..10)
-    end
-
-    test "should require low" do
-      assert {:error, "expected (high, low) missing low"} =
-               TalibEx.aroonosc(window: 5, high: 1..10)
-    end
-
-    test "should require window" do
-      assert {:error, "window is required and should be between 2 and 100,000"} =
-               TalibEx.aroonosc(high: 3..12, low: 1..10)
-    end
-
     test "should return down and up as lists" do
       assert {:ok, [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
-               TalibEx.aroonosc(high: 3..12, low: 1..10, window: 3)
+               TalibEx.aroonosc(high: Enum.to_list(3..12), low: Enum.to_list(1..10), window: 3)
     end
   end
 
   describe "asin/1" do
     test "should return a list" do
-      assert {:ok, [0.0, 0.2013579207903308, 0.41151684606748806, 0.5235987755982988]} =
-               TalibEx.asin([0.0, 0.2, 0.4, 0.5])
+      assert {:ok, [0.0, 0.2013579207903308, 0.41151684606748806, 0.5235987755982989]} =
+               TalibEx.asin(list: [0.0, 0.2, 0.4, 0.5])
     end
   end
 
   describe "atan/1" do
     test "should return a list" do
       assert {:ok, [1.5607966601082315, 1.560895660206908, 1.5609927193156006]} =
-               TalibEx.atan(100..102)
+               TalibEx.atan(list: Enum.to_list(100..102))
     end
   end
 
@@ -569,12 +511,13 @@ defmodule TalibExTest do
     end
   end
 
-  describe "bbands/2" do
+  describe "bbands/1" do
     test "should return a list" do
       assert {:ok, [:nan, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1],
               [:nan, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5],
               [:nan, 1.4, 2.4, 3.4, 4.4, 5.4, 6.4, 7.4, 8.4, 9.4]} =
-               TalibEx.bbands(1..10,
+               TalibEx.bbands(
+                 list: Enum.to_list(1..10),
                  window: 2,
                  np_dev_down: 0.2,
                  np_dev_up: 1.2,
@@ -599,7 +542,7 @@ defmodule TalibExTest do
                  0.7777777777776714,
                  0.7999999999998273
                ]
-             } = TalibEx.beta(1..10, 2..11, window: 2)
+             } = TalibEx.beta(list1: Enum.to_list(1..10), list2: Enum.to_list(2..11), window: 2)
     end
   end
 
@@ -646,26 +589,59 @@ defmodule TalibExTest do
     end
   end
 
-  describe "sma/2" do
+  describe "cci/1" do
     test "should return a list" do
-      assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma([1.0, 2.0, 3.0, 4.0], window: 2)
+      assert {
+               :ok,
+               [
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 :nan,
+                 66.36486226160619,
+                 79.67201076979516,
+                 167.63005780346938,
+                 190.00276166804917,
+                 100.7470743187808,
+                 51.002987622704936,
+                 39.253129641416045,
+                 0.7385524372223731,
+                 59.30207664311655,
+                 20.89975203683933,
+                 -71.24542124541935,
+                 116.89359556227487,
+                 103.97323295692027,
+                 -30.124040165387626,
+                 48.93410852713618,
+                 -29.371584699454605,
+                 -233.01358912870035,
+                 -209.52491219945279,
+                 -30.02660585328783,
+                 35.45695866515125,
+                 72.07778482350487,
+                 92.44334228835154,
+                 132.24743067674902,
+                 128.75654811138537
+               ]
+             } = TalibEx.cci([{:window, 10} | @ohlcv])
     end
+  end
 
-    test "should default window to 5" do
-      assert {:ok, [:nan, :nan, :nan, :nan, 3.0, 4.0, 5.0, 6.0, 7.0]} ==
-               TalibEx.sma([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    end
-
-    test "should accept range" do
-      assert {:ok, [:nan, :nan, :nan, :nan, 3.0, 4.0, 5.0, 6.0, 7.0]} ==
-               TalibEx.sma(1..9, window: 5)
+  describe "sma/1" do
+    test "should return a list" do
+      assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma(list: [1.0, 2.0, 3.0, 4.0], window: 2)
     end
   end
 
   describe "sqrt/1" do
     test "should return a list" do
       assert {:ok, [1.0, 1.4142135623730951, 1.7320508075688772, 2.0]} ==
-               TalibEx.sqrt([1, 2, 3, 4])
+               TalibEx.sqrt(list: [1, 2, 3, 4])
     end
 
     test "should accept range" do
@@ -681,7 +657,7 @@ defmodule TalibExTest do
                 2.8284271247461903,
                 3.0
               ]} ==
-               TalibEx.sqrt(1..9)
+               TalibEx.sqrt(list: Enum.to_list(1..9))
     end
   end
 end

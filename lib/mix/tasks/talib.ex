@@ -207,6 +207,20 @@ defmodule Mix.Tasks.Talib do
       ]
     },
     %{
+      name: "cci",
+      doc: "Commodity Channel Index",
+      target: "TA_CCI",
+      inputs: [
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :window, type: :integer}
+      ],
+      outputs: [
+        %{name: :list, type: :double_array}
+      ]
+    },
+    %{
       name: "sma",
       doc: "Simple Moving Average",
       target: "TA_SMA",
