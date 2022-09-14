@@ -206,7 +206,7 @@ defmodule Mix.Tasks.Talib do
     }
   ]
   @impl Mix.Task
-  def run(_args) do
+  def run(_args \\ []) do
     {bindings, headers, nif_functions} =
       Enum.reduce(@mapping, {[], [], []}, fn func, {bindings, headers, nif_functions} ->
         %{
