@@ -128,10 +128,10 @@ defmodule TalibEx do
   @moving_average_types ~w(sma ema wma dema tema trima kama mama t3)a
 
   @spec apo(list_of_numbers, [
-          {:fast_period, pos_integer()},
-          {:slow_period, pos_integer()},
-          {:moving_average_type,
-           :sma | :ema | :wma | :dema | :tema | :trima | :kama | :mama | :t3}
+          fast_period()
+          | slow_period()
+          | {:moving_average_type,
+             :sma | :ema | :wma | :dema | :tema | :trima | :kama | :mama | :t3}
         ]) :: {:ok, numbers_nan_list()} | {:error, term}
   @doc "Absolute Price Oscillator"
   def apo(list, other_params) do
@@ -169,7 +169,7 @@ defmodule TalibEx do
     end
   end
 
-  @spec aroon([{:high, list_of_numbers} | {:low, list_of_numbers} | {:window, pos_integer()}]) ::
+  @spec aroon([high() | low() | window()]) ::
           {:ok, down :: numbers_nan_list(), up :: numbers_nan_list()} | {:error, term}
   @doc "Aroon"
   def aroon(opts) do
@@ -189,7 +189,7 @@ defmodule TalibEx do
     end
   end
 
-  @spec aroonosc([{:high, list_of_numbers} | {:low, list_of_numbers} | {:window, pos_integer()}]) ::
+  @spec aroonosc([high() | low() | window()]) ::
           {:ok, down :: numbers_nan_list(), up :: numbers_nan_list()} | {:error, term}
   @doc "Aroon Oscillator"
   def aroonosc(opts) do
@@ -225,7 +225,43 @@ defmodule TalibEx do
     end
   end
 
-  @spec sma(list_of_numbers, [{:window, pos_integer()}]) ::
+  @spec atan(list_of_numbers) ::
+          {:ok, numbers_nan_list} | {:error, term}
+  @doc "Vector Trigonometric ATan"
+  def atan(list) do
+    with {:ok, %{list: list}} <- load_lists([list: list], [:list]),
+         {:ok, [result]} <- Nif.nif_atan(list) do
+      {:ok, result}
+    else
+      {:error, error} ->
+        {:error, error}
+
+      error ->
+        error
+    end
+  end
+
+  @spec atr([high() | low() | close() | window()]) ::
+          {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Average True Range"
+  def atr(opts) do
+    with {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
+         {:ok, %{high: high, low: low, close: close}} <- hlc(opts),
+         {:ok, [result]} <- Nif.nif_atr(high, low, close, window) do
+      {:ok, result}
+    else
+      {:error, error} ->
+        {:error, error}
+
+      {option, _} ->
+        {:error, "#{option} #{@numeric_message}"}
+
+      error ->
+        error
+    end
+  end
+
+  @spec sma(list_of_numbers, [window()]) ::
           {:ok, numbers_nan_list} | {:error, term}
   @doc """
   Simple Moving Average

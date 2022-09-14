@@ -51,6 +51,14 @@ defmodule TalibEx.Nif do
     raise "nif_asin/1 not implemented end"
   end
 
+  def nif_atan(_) do
+    raise "nif_atan/1 not implemented end"
+  end
+
+  def nif_atr(_, _, _, _) do
+    raise "nif_atr/4 not implemented end"
+  end
+
   def nif_sma(_, _) do
     raise "nif_sma/2 not implemented end"
   end
