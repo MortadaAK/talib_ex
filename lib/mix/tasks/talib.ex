@@ -163,6 +163,31 @@ defmodule Mix.Tasks.Talib do
       ]
     },
     %{
+      name: "beta",
+      target: "TA_BETA",
+      inputs: [
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :integer}
+      ],
+      outputs: [
+        %{type: :double_array}
+      ]
+    },
+    %{
+      name: "bop",
+      target: "TA_BOP",
+      inputs: [
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :double_array},
+        %{type: :double_array}
+      ],
+      outputs: [
+        %{type: :double_array}
+      ]
+    },
+    %{
       name: "sma",
       target: "TA_SMA",
       inputs: [

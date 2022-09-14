@@ -230,6 +230,34 @@ defmodule TalibEx do
     end
   end
 
+  @spec beta(list_of_numbers(), list_of_numbers(), [window()]) ::
+          {:ok, numbers_nan_list} | {:error, term}
+  @doc """
+  Beta
+  """
+  def beta(list1, list2, opts) do
+    with {:ok, %{list1: list1, list2: list2}} <-
+           load_lists([list1: list1, list2: list2], [:list1, :list2]),
+         {:window, window} when int_2_to_100000(window) <- {:window, Keyword.get(opts, :window)},
+         {:ok, [result]} <- Nif.nif_beta(list1, list2, window) do
+      {:ok, result}
+    else
+      error -> handle_error(error)
+    end
+  end
+
+  @spec bop([high() | low() | close() | open()]) ::
+          {:ok, numbers_nan_list()} | {:error, term}
+  @doc "Balance Of Power"
+  def bop(opts) do
+    with {:ok, %{high: high, low: low, close: close, open: open}} <- ohlc(opts),
+         {:ok, [result]} <- Nif.nif_bop(open, high, low, close) do
+      {:ok, result}
+    else
+      error -> handle_error(error)
+    end
+  end
+
   @spec sma(list_of_numbers, [window()]) ::
           {:ok, numbers_nan_list} | {:error, term}
   @doc """
