@@ -5,231 +5,197 @@ defmodule Mix.Tasks.Talib do
   use Mix.Task
   @c_dir Path.join([__DIR__, "..", "..", "..", "c_src"]) |> Path.expand()
   @module_dir Path.join([__DIR__, "..", ".."]) |> Path.expand()
+  @time_period1 %{
+    name: :time_period,
+    type: :integer,
+    min: 1,
+    max: 100_000,
+    default: 5,
+    doc: "Number of period"
+  }
+  @time_period2 %{
+    name: :time_period,
+    type: :integer,
+    min: 1,
+    max: 100_000,
+    default: 5,
+    doc: "Number of period"
+  }
+  @generic %{name: :values, type: :double_array}
+  @generic0 %{name: :values0, type: :double_array}
+  @generic1 %{name: :values1, type: :double_array}
+  @open %{name: :open, type: :double_array, doc: "Open Price List"}
+  @high %{name: :high, type: :double_array, doc: "High Price List"}
+  @low %{name: :low, type: :double_array, doc: "Low Price List"}
+  @close %{name: :close, type: :double_array, doc: "Close Price List"}
+  @volume %{name: :volume, type: :double_array, doc: "Volume List"}
+  @fast_period %{
+    name: :fast_period,
+    type: :integer,
+    min: 2,
+    max: 100_000,
+    default: 5,
+    doc: "Number of period for the fast MA"
+  }
+  @slow_period %{
+    name: :slow_period,
+    type: :integer,
+    min: 2,
+    max: 100_000,
+    default: 15,
+    doc: "Number of period for the slow MA"
+  }
+  @moving_average_type %{
+    name: :moving_average_type,
+    type: :ma_type,
+    default: :sma,
+    doc:
+      "Type of moving average. `sma` | `ema` | `wma` | `dema` | `tema` | `trima` | `kama` | `mama` | `t3`"
+  }
+  @cdl_pentration %{
+    name: :pentration,
+    type: :double,
+    min: 0,
+    doc: "Percentage of penetration of a candle within another candle"
+  }
   @mapping [
     %{
       name: "acos",
       doc: "Vector Trigonometric ACos",
       target: "TA_ACOS",
-      inputs: [%{name: :list, type: :double_array}],
+      inputs: [@generic],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "ad",
       doc: "Chaikin A/D Line",
       target: "TA_AD",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :volume, type: :double_array}
-      ],
+      inputs: [@high, @low, @close, @volume],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "add",
       doc: "Vector Arithmetic Add",
       target: "TA_ADD",
-      inputs: [
-        %{name: :list1, type: :double_array},
-        %{name: :list2, type: :double_array}
-      ],
+      inputs: [@generic0, @generic1],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "adosc",
       doc: "Chaikin A/D Oscillator",
       target: "TA_ADOSC",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :volume, type: :double_array},
-        %{name: :fast_period, type: :integer},
-        %{name: :slow_period, type: :integer}
-      ],
+      inputs: [@high, @low, @close, @volume, @fast_period, @slow_period],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "adx",
       doc: "Average Directional Movement Index",
       target: "TA_ADX",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
+      inputs: [@high, @low, @close, @time_period2],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "adxr",
       doc: "Average Directional Movement Index Rating",
       target: "TA_ADXR",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
+      inputs: [@high, @low, @close, @time_period2],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "apo",
       doc: "Absolute Price Oscillator",
       target: "TA_APO",
-      inputs: [
-        %{name: :list, type: :double_array},
-        %{name: :fast_period, type: :integer},
-        %{name: :slow_period, type: :integer},
-        %{name: :moving_average_type, type: :ma_type}
-      ],
+      inputs: [@generic, @fast_period, @slow_period, @moving_average_type],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "aroon",
       doc: "Aroon",
       target: "TA_AROON",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
+      inputs: [@high, @low, @time_period2],
       outputs: [
-        %{name: :down, type: :double_array},
-        %{name: :up, type: :double_array}
+        %{name: :down, type: :double_array, doc: "Arron Down"},
+        %{name: :up, type: :double_array, doc: "Arron Up"}
       ]
     },
     %{
       name: "aroonosc",
       doc: "Aroon Oscillator",
       target: "TA_AROONOSC",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@high, @low, @time_period2],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "asin",
       doc: "Vector Trigonometric ASin",
       target: "TA_ASIN",
-      inputs: [
-        %{name: :list, type: :double_array}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@generic],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "atan",
       doc: "Vector Trigonometric ATan",
       target: "TA_ATAN",
-      inputs: [
-        %{name: :list, type: :double_array}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@generic],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "atr",
       doc: "Average True Range",
       target: "TA_ATR",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@high, @low, @close, @time_period1],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "avgprice",
       doc: "Average Price",
       target: "TA_AVGPRICE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@open, @high, @low, @close],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "bbands",
       doc: "Bollinger Bands",
       target: "TA_BBANDS",
       inputs: [
-        %{name: :list, type: :double_array},
-        %{name: :window, type: :integer},
-        %{name: :np_dev_up, type: :double},
-        %{name: :np_dev_down, type: :double},
-        %{name: :moving_average_type, type: :ma_type}
+        @generic,
+        @time_period2,
+        %{name: :np_dev_up, type: :double, doc: "Deviation multiplier for upper band"},
+        %{name: :np_dev_down, type: :double, doc: "Deviation multiplier for lower band"},
+        @moving_average_type
       ],
       outputs: [
-        %{name: :upper, type: :double_array},
-        %{name: :middle, type: :double_array},
-        %{name: :lower, type: :double_array}
+        %{name: :upper, type: :double_array, doc: "Upper Band"},
+        %{name: :middle, type: :double_array, doc: "Middle Band"},
+        %{name: :lower, type: :double_array, doc: "Lower Band"}
       ]
     },
     %{
       name: "beta",
       doc: "Beta",
       target: "TA_BETA",
-      inputs: [
-        %{name: :list1, type: :double_array},
-        %{name: :list2, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@generic0, @generic1, @time_period1],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "bop",
       doc: "Balance Of Power",
       target: "TA_BOP",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@open, @high, @low, @close],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "cci",
       doc: "Commodity Channel Index",
       target: "TA_CCI",
-      inputs: [
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
-      outputs: [
-        %{name: :list, type: :double_array}
-      ]
+      inputs: [@high, @low, @close, @time_period2],
+      outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "cdl2_crows",
       doc: "Two Crows",
       target: "TA_CDL2CROWS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -238,12 +204,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_black_crows",
       doc: "Three Black Crows",
       target: "TA_CDL3BLACKCROWS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -252,12 +213,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_inside",
       doc: "Three Inside Up/Down",
       target: "TA_CDL3INSIDE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -266,12 +222,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_line_strike",
       doc: "Three-Line Strike",
       target: "TA_CDL3LINESTRIKE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -280,12 +231,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_outside",
       doc: "Three Outside Up/Down",
       target: "TA_CDL3OUTSIDE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -294,12 +240,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_stars_in_south",
       doc: "Three Stars In The South",
       target: "TA_CDL3STARSINSOUTH",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -308,12 +249,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl3_white_soldiers",
       doc: "Three Advancing White Soldiers",
       target: "TA_CDL3WHITESOLDIERS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -323,11 +259,11 @@ defmodule Mix.Tasks.Talib do
       doc: "Abandoned Baby",
       target: "TA_CDLABANDONEDBABY",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :penetration, type: :double}
+        @open,
+        @high,
+        @low,
+        @close,
+        @cdl_pentration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -337,12 +273,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_advance_block",
       doc: "Advance Block",
       target: "TA_CDLADVANCEBLOCK",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -351,12 +282,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_belt_hold",
       doc: "Belt-hold",
       target: "TA_CDLBELTHOLD",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -365,12 +291,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_breakaway",
       doc: "Breakaway",
       target: "TA_CDLBREAKAWAY",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -379,12 +300,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_closing_marubozu",
       doc: "Closing Marubozu",
       target: "TA_CDLCLOSINGMARUBOZU",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -393,12 +309,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_conceal_baby_swallow",
       doc: "Concealing Baby Swallow",
       target: "TA_CDLCONCEALBABYSWALL",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -407,12 +318,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_counterattack",
       doc: "Counterattack",
       target: "TA_CDLCOUNTERATTACK",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -422,10 +328,10 @@ defmodule Mix.Tasks.Talib do
       doc: "Dark Cloud Cover",
       target: "TA_CDLDARKCLOUDCOVER",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
+        @open,
+        @high,
+        @low,
+        @close,
         %{name: :peneration, type: :double}
       ],
       outputs: [
@@ -436,12 +342,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_doji",
       doc: "Doji",
       target: "TA_CDLDOJI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -450,12 +351,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_doji_star",
       doc: "Doji Star",
       target: "TA_CDLDOJISTAR",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -464,12 +360,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_dragonfly_doji",
       doc: "Dragonfly Doji",
       target: "TA_CDLDRAGONFLYDOJI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -478,12 +369,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_engulfing",
       doc: "Engulfing Pattern",
       target: "TA_CDLENGULFING",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -493,10 +379,10 @@ defmodule Mix.Tasks.Talib do
       doc: "Evening Doji Star",
       target: "TA_CDLEVENINGDOJISTAR",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
+        @open,
+        @high,
+        @low,
+        @close,
         %{name: :peneration, type: :double}
       ],
       outputs: [
@@ -508,10 +394,10 @@ defmodule Mix.Tasks.Talib do
       doc: "Evening Star",
       target: "TA_CDLEVENINGSTAR",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
+        @open,
+        @high,
+        @low,
+        @close,
         %{name: :peneration, type: :double}
       ],
       outputs: [
@@ -522,12 +408,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_gap_side_side_white",
       doc: "Up/Down-gap side-by-side white lines",
       target: "TA_CDLGAPSIDESIDEWHITE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -536,12 +417,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_gravestone_doji",
       doc: "Gravestone Doji",
       target: "TA_CDLGRAVESTONEDOJI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -550,12 +426,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_hammer",
       doc: "Hammer",
       target: "TA_CDLHAMMER",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -564,12 +435,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_hanging_man",
       doc: "Hanging Man",
       target: "TA_CDLHANGINGMAN",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -578,12 +444,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_harami",
       doc: "Harami Pattern",
       target: "TA_CDLHARAMI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -592,12 +453,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_harami_cross",
       doc: "Harami Cross Pattern",
       target: "TA_CDLHARAMICROSS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -606,12 +462,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_highwave",
       doc: "High-Wave Candle",
       target: "TA_CDLHIGHWAVE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -620,12 +471,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_hikkake",
       doc: "Hikkake Pattern",
       target: "TA_CDLHIKKAKE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -634,12 +480,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_hikkake_mod",
       doc: "Modified Hikkake Pattern",
       target: "TA_CDLHIKKAKEMOD",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -648,12 +489,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_homing_pigeon",
       doc: "Homing Pigeon",
       target: "TA_CDLHOMINGPIGEON",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -662,12 +498,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_identical_3_crows",
       doc: "Identical Three Crows",
       target: "TA_CDLIDENTICAL3CROWS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -676,12 +507,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_inneck",
       doc: "In-Neck Pattern",
       target: "TA_CDLINNECK",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -690,12 +516,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_inverted_hammer",
       doc: "Inverted Hammer",
       target: "TA_CDLINVERTEDHAMMER",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -704,12 +525,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_kicking",
       doc: "Kicking",
       target: "TA_CDLKICKING",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -718,12 +534,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_kicking_by_length",
       doc: "Kicking - bull/bear determined by the longer marubozu",
       target: "TA_CDLKICKINGBYLENGTH",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -732,12 +543,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_ladder_bottom",
       doc: "Ladder Bottom",
       target: "TA_CDLLADDERBOTTOM",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -746,12 +552,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_long_legged_doji",
       doc: "Long Legged Doji",
       target: "TA_CDLLONGLEGGEDDOJI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -760,12 +561,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_long_line",
       doc: "Long Line Candle",
       target: "TA_CDLLONGLINE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -774,12 +570,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_marubozu",
       doc: "Marubozu",
       target: "TA_CDLMARUBOZU",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -788,12 +579,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_matching_low",
       doc: "Matching Low",
       target: "TA_CDLMATCHINGLOW",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -803,11 +589,11 @@ defmodule Mix.Tasks.Talib do
       doc: "Mat Hold",
       target: "TA_CDLMATHOLD",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :penetration, type: :double}
+        @open,
+        @high,
+        @low,
+        @close,
+        @cdl_pentration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -818,11 +604,11 @@ defmodule Mix.Tasks.Talib do
       doc: "Morning Doji Star",
       target: "TA_CDLMORNINGDOJISTAR",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :penetration, type: :double}
+        @open,
+        @high,
+        @low,
+        @close,
+        @cdl_pentration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -833,11 +619,11 @@ defmodule Mix.Tasks.Talib do
       doc: "Morning Star",
       target: "TA_CDLMORNINGSTAR",
       inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array},
-        %{name: :penetration, type: :double}
+        @open,
+        @high,
+        @low,
+        @close,
+        @cdl_pentration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -847,12 +633,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_on_neck",
       doc: "On-Neck Pattern",
       target: "TA_CDLONNECK",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -861,12 +642,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_piercing",
       doc: "Piercing Pattern",
       target: "TA_CDLPIERCING",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -875,12 +651,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_rickshaw_man",
       doc: "Rickshaw Man",
       target: "TA_CDLRICKSHAWMAN",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -889,12 +660,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_rise_fall_3_methods",
       doc: "Rickshaw Man",
       target: "TA_CDLRISEFALL3METHODS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -903,12 +669,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_separating_lines",
       doc: "Separating Lines",
       target: "TA_CDLSEPARATINGLINES",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -917,12 +678,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_shooting_star",
       doc: "Shooting Star",
       target: "TA_CDLSHOOTINGSTAR",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -931,12 +687,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_short_line",
       doc: "Short Line Candle",
       target: "TA_CDLSHORTLINE",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -945,12 +696,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_spinning_top",
       doc: "Spinning Top",
       target: "TA_CDLSPINNINGTOP",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -959,12 +705,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_stalled_pattern",
       doc: "Stalled Pattern",
       target: "TA_CDLSTALLEDPATTERN",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -973,12 +714,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_stick_sandwich",
       doc: "Stick Sandwich",
       target: "TA_CDLSTICKSANDWICH",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -987,12 +723,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_takuri",
       doc: "Takuri (Dragonfly Doji with very long lower shadow)",
       target: "TA_CDLTAKURI",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1001,12 +732,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_tasuki_gap",
       doc: "Tasuki Gap",
       target: "TA_CDLTASUKIGAP",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1015,12 +741,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_thrusting",
       doc: "Thrusting Pattern",
       target: "TA_CDLTHRUSTING",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1029,12 +750,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_tri_star",
       doc: "Tristar Pattern",
       target: "TA_CDLTRISTAR",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1043,12 +759,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_unique_3_river",
       doc: "Unique 3 River",
       target: "TA_CDLUNIQUE3RIVER",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1057,12 +768,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_upside_gap_2_crows",
       doc: "Upside Gap Two Crows",
       target: "TA_CDLUPSIDEGAP2CROWS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1071,12 +777,7 @@ defmodule Mix.Tasks.Talib do
       name: "cdl_upside_downside_gap_3_methods",
       doc: "Upside/Downside Gap Three Methods",
       target: "TA_CDLXSIDEGAP3METHODS",
-      inputs: [
-        %{name: :open, type: :double_array},
-        %{name: :high, type: :double_array},
-        %{name: :low, type: :double_array},
-        %{name: :close, type: :double_array}
-      ],
+      inputs: [@open, @high, @low, @close],
       outputs: [
         %{name: :list, type: :integer_array}
       ]
@@ -1085,19 +786,14 @@ defmodule Mix.Tasks.Talib do
       name: "sma",
       doc: "Simple Moving Average",
       target: "TA_SMA",
-      inputs: [
-        %{name: :list, type: :double_array},
-        %{name: :window, type: :integer}
-      ],
+      inputs: [@generic, @time_period2],
       outputs: [%{name: :list, type: :double_array}]
     },
     %{
       name: "sqrt",
       doc: "Vector Square Root",
       target: "TA_SQRT",
-      inputs: [
-        %{name: :list, type: :double_array}
-      ],
+      inputs: [@generic],
       outputs: [%{name: :window, type: :double_array}]
     }
   ]
@@ -1206,8 +902,11 @@ defmodule Mix.Tasks.Talib do
         name: name,
         doc: doc,
         outputs: outputs,
-        inputs: inputs
+        inputs: inputs,
+        inputs_length: inputs_length
       }) do
+    name = String.trim(name)
+
     inputs_spec =
       Enum.map(inputs, fn
         %{name: name, type: :double_array} ->
@@ -1223,8 +922,8 @@ defmodule Mix.Tasks.Talib do
           "{:#{name}, number()}"
       end)
 
-    loaded_inputs = Enum.map(inputs, &"#{&1.name} = Keyword.fetch!(params, :#{&1.name})\n")
-    nif_call = Enum.map_join(inputs, ", ", & &1.name)
+    loaded_inputs =
+      Enum.map(inputs, &"|> Executer.load(:#{&1.name},:#{&1.type} #{executer_params(&1)})\n")
 
     outputs_spec =
       Enum.map(outputs, fn
@@ -1235,16 +934,72 @@ defmodule Mix.Tasks.Talib do
           "#{name} :: [integer()|:nan]"
       end)
 
+    input_docs = Enum.map_join(inputs, "\n", &describe_input/1)
+    output_docs = Enum.map_join(outputs, "\n", &describe_output/1)
+
     """
     @dialyzer {:nowarn_function, #{name}: 1}
     @spec #{name}([#{Enum.join(inputs_spec, "| ")}]) :: {:ok, #{Enum.join(outputs_spec, ", ")}} | {:error,term()}
-    @doc "#{doc}"
+    @doc \"\"\"
+    #{doc}
+
+    ---
+    Inputs
+    #{input_docs}
+
+    ---
+    Outputs
+    #{output_docs}
+    \"\"\"
     def #{name}(params) do
+      params
+      |> Executer.new()
       #{loaded_inputs}
-      Nif.nif_#{name}(#{nif_call})
+      |> Executer.call(&Nif.nif_#{name}/#{inputs_length})
     end
     """
   end
+
+  defp executer_params(%{min: min, max: max, default: default}),
+    do: ", %{default: #{inspect(default)}, min: #{min}, max: #{max}}"
+
+  defp executer_params(%{min: min, max: max}), do: ", %{min: #{min}, max: #{max}}"
+
+  defp executer_params(%{min: min, default: default}),
+    do: ", %{default: #{inspect(default)}, min: #{min}}"
+
+  defp executer_params(%{min: min}), do: ", %{min: #{min}}"
+
+  defp executer_params(%{default: default}),
+    do: ", %{default: #{inspect(default)}}"
+
+  defp executer_params(_), do: ""
+
+  defp describe_input(%{name: name} = input) do
+    min = Map.get(input, :min)
+    max = Map.get(input, :max)
+    default = Map.get(input, :default)
+    doc = Map.get(input, :doc)
+
+    "- `#{name}`"
+    |> then(fn
+      value when not is_nil(default) -> "#{value} (default `#{inspect(default)}`)"
+      value -> value
+    end)
+    |> then(fn
+      value when not is_nil(doc) -> "#{value}: #{doc}"
+      value -> value
+    end)
+    |> then(fn
+      value when not is_nil(min) and not is_nil(max) -> "#{value} (between `#{min}` and `#{max}`)"
+      value when not is_nil(min) -> "#{value} (minuimum `#{min}`)"
+      value when not is_nil(max) -> "#{value} (maximum `#{max}`)"
+      value -> value
+    end)
+  end
+
+  defp describe_output(%{name: name, doc: doc}), do: "- `#{name}`: #{doc}"
+  defp describe_output(%{name: name}), do: "- `#{name}`"
 
   def build_c_function(%{
         name: name,
@@ -1581,7 +1336,7 @@ defmodule Mix.Tasks.Talib do
           @moduledoc """
           Interface for talib
           """
-          alias TalibEx.Nif
+          alias TalibEx.{Nif, Executer}
 
           #{Enum.join(functions, "\n")}
         end

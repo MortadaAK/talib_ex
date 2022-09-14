@@ -194,7 +194,7 @@ defmodule TalibExTest do
                 0.6435011087932843,
                 0.45102681179626236,
                 1.0471975511965979
-              ]} = TalibEx.acos(list: [1, 0.5, 1, 0.5, 0.2, 0.3, 0.5, 0.8, 0.9, 0.5])
+              ]} = TalibEx.acos(values: [1, 0.5, 1, 0.5, 0.2, 0.3, 0.5, 0.8, 0.9, 0.5])
     end
   end
 
@@ -244,12 +244,12 @@ defmodule TalibExTest do
   describe "add/1" do
     test "should return a list" do
       assert {:ok, [12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0]} =
-               TalibEx.add(list1: Enum.to_list(1..9), list2: Enum.to_list(11..19))
+               TalibEx.add(values0: Enum.to_list(1..9), values1: Enum.to_list(11..19))
     end
 
     test "should return error when the lists are not the same length" do
-      assert {:error, 'list2 is a list with different length'} =
-               TalibEx.add(list1: Enum.to_list(1..9), list2: Enum.to_list(1..19))
+      assert {:error, "values1 is a list with different length"} =
+               TalibEx.add(values0: Enum.to_list(1..9), values1: Enum.to_list(1..19))
     end
   end
 
@@ -335,7 +335,7 @@ defmodule TalibExTest do
                  78.41576211831782,
                  86.19329655620886
                ]
-             } = TalibEx.adx([{:window, 2} | @ohlcv])
+             } = TalibEx.adx([{:time_period, 2} | @ohlcv])
     end
   end
 
@@ -378,7 +378,7 @@ defmodule TalibExTest do
                  74.05831754302821,
                  82.30452933726335
                ]
-             } = TalibEx.adxr([{:window, 2} | @ohlcv])
+             } = TalibEx.adxr([{:time_period, 2} | @ohlcv])
     end
   end
 
@@ -387,7 +387,7 @@ defmodule TalibExTest do
       for mvt <- ~w(sma ema wma dema tema trima kama mama t3)a do
         assert {:ok, [_, _, _, _, _, _, _, _, _, _]} =
                  TalibEx.apo(
-                   list: Enum.to_list(1..10),
+                   values: Enum.to_list(1..10),
                    fast_period: 10,
                    slow_period: 25,
                    moving_average_type: mvt
@@ -400,28 +400,32 @@ defmodule TalibExTest do
     test "should return down and up as lists" do
       assert {:ok, [:nan, :nan, :nan, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
               [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
-               TalibEx.aroon(high: Enum.to_list(3..12), low: Enum.to_list(1..10), window: 3)
+               TalibEx.aroon(high: Enum.to_list(3..12), low: Enum.to_list(1..10), time_period: 3)
     end
   end
 
   describe "aroonosc/1" do
     test "should return down and up as lists" do
       assert {:ok, [:nan, :nan, :nan, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]} =
-               TalibEx.aroonosc(high: Enum.to_list(3..12), low: Enum.to_list(1..10), window: 3)
+               TalibEx.aroonosc(
+                 high: Enum.to_list(3..12),
+                 low: Enum.to_list(1..10),
+                 time_period: 3
+               )
     end
   end
 
   describe "asin/1" do
     test "should return a list" do
       assert {:ok, [0.0, 0.2013579207903308, 0.41151684606748806, 0.5235987755982989]} =
-               TalibEx.asin(list: [0.0, 0.2, 0.4, 0.5])
+               TalibEx.asin(values: [0.0, 0.2, 0.4, 0.5])
     end
   end
 
   describe "atan/1" do
     test "should return a list" do
       assert {:ok, [1.5607966601082315, 1.560895660206908, 1.5609927193156006]} =
-               TalibEx.atan(list: Enum.to_list(100..102))
+               TalibEx.atan(values: Enum.to_list(100..102))
     end
   end
 
@@ -464,7 +468,7 @@ defmodule TalibExTest do
                  0.9398128140624613,
                  0.9299064070312315
                ]
-             } = TalibEx.atr([{:window, 2} | @ohlcv])
+             } = TalibEx.atr([{:time_period, 2} | @ohlcv])
     end
   end
 
@@ -517,8 +521,8 @@ defmodule TalibExTest do
               [:nan, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5],
               [:nan, 1.4, 2.4, 3.4, 4.4, 5.4, 6.4, 7.4, 8.4, 9.4]} =
                TalibEx.bbands(
-                 list: Enum.to_list(1..10),
-                 window: 2,
+                 values: Enum.to_list(1..10),
+                 time_period: 2,
                  np_dev_down: 0.2,
                  np_dev_up: 1.2,
                  moving_average_type: :sma
@@ -542,7 +546,12 @@ defmodule TalibExTest do
                  0.7777777777776714,
                  0.7999999999998273
                ]
-             } = TalibEx.beta(list1: Enum.to_list(1..10), list2: Enum.to_list(2..11), window: 2)
+             } =
+               TalibEx.beta(
+                 values0: Enum.to_list(1..10),
+                 values1: Enum.to_list(2..11),
+                 time_period: 2
+               )
     end
   end
 
@@ -628,20 +637,21 @@ defmodule TalibExTest do
                  132.24743067674902,
                  128.75654811138537
                ]
-             } = TalibEx.cci([{:window, 10} | @ohlcv])
+             } = TalibEx.cci([{:time_period, 10} | @ohlcv])
     end
   end
 
   describe "sma/1" do
     test "should return a list" do
-      assert {:ok, [:nan, 1.5, 2.5, 3.5]} == TalibEx.sma(list: [1.0, 2.0, 3.0, 4.0], window: 2)
+      assert {:ok, [:nan, 1.5, 2.5, 3.5]} ==
+               TalibEx.sma(values: [1.0, 2.0, 3.0, 4.0], time_period: 2)
     end
   end
 
   describe "sqrt/1" do
     test "should return a list" do
       assert {:ok, [1.0, 1.4142135623730951, 1.7320508075688772, 2.0]} ==
-               TalibEx.sqrt(list: [1, 2, 3, 4])
+               TalibEx.sqrt(values: [1, 2, 3, 4])
     end
 
     test "should accept range" do
@@ -657,7 +667,7 @@ defmodule TalibExTest do
                 2.8284271247461903,
                 3.0
               ]} ==
-               TalibEx.sqrt(list: Enum.to_list(1..9))
+               TalibEx.sqrt(values: Enum.to_list(1..9))
     end
   end
 end
