@@ -29,5 +29,7 @@ talib_ex-*.tar
 /c_src/func_*.c
 /c_src/funcs.h
 /c_src/talib.c
+/lib/talib_ex.ex
+/lib/nif.ex
 /priv/*.so
 /priv/*.so.*
