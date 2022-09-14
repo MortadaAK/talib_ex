@@ -2,6 +2,7 @@ defmodule TalibEx do
   @moduledoc """
   Interface for talib
   """
+  # Generated File
   alias TalibEx.{Nif, Executer}
 
   @dialyzer {:nowarn_function, acos: 1}
