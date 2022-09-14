@@ -29,7 +29,7 @@ construct_array_from_list(ErlNifEnv *env, ERL_NIF_TERM opts, unsigned *len)
 
     arr = (double *)enif_alloc((*len) * sizeof(double));
 
-        while (enif_get_list_cell(env, opts, &val, &opts))
+    while (enif_get_list_cell(env, opts, &val, &opts))
     {
         if (enif_is_number(env, val))
         {
@@ -72,4 +72,58 @@ populate_output_double(
         }
     }
     return enif_make_list_from_array(env, outTerms, inLen);
+}
+void load_moving_average_type(ERL_NIF_TERM arg, talib_st *atoms, TA_MAType *type)
+{
+
+    if (arg == atoms->atom_ema)
+    {
+        *type = TA_MAType_EMA;
+        return;
+    }
+
+    if (arg == atoms->atom_wma)
+    {
+        *type = TA_MAType_WMA;
+        return;
+    }
+
+    if (arg == atoms->atom_dema)
+    {
+        *type = TA_MAType_DEMA;
+        return;
+    }
+
+    if (arg == atoms->atom_tema)
+    {
+        *type = TA_MAType_TEMA;
+        return;
+    }
+
+    if (arg == atoms->atom_trima)
+    {
+        *type = TA_MAType_TRIMA;
+        return;
+    }
+
+    if (arg == atoms->atom_kama)
+    {
+        *type = TA_MAType_KAMA;
+        return;
+    }
+
+    if (arg == atoms->atom_mama)
+    {
+        *type = TA_MAType_MAMA;
+        return;
+    }
+
+    if (arg == atoms->atom_t3)
+    {
+        *type = TA_MAType_T3;
+        return;
+    }
+
+    /* the default type is going to be sma */
+    *type = TA_MAType_SMA;
 }

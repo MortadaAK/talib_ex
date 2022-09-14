@@ -1,7 +1,5 @@
 defmodule TalibEx.Nif do
-  @moduledoc """
-  Documentation for `TalibEx`.
-  """
+  @moduledoc false
   @on_load :load_nifs
 
   def load_nifs do
@@ -83,4 +81,3 @@ defmodule TalibEx.Nif do
     raise "nif_sqrt/1 not implemented end"
   end
 end
-  

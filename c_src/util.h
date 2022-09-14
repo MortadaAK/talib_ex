@@ -10,6 +10,15 @@ typedef struct
     ERL_NIF_TERM atom_nan;
     ERL_NIF_TERM atom_ok;
     ERL_NIF_TERM atom_error;
+    ERL_NIF_TERM atom_sma;
+    ERL_NIF_TERM atom_ema;
+    ERL_NIF_TERM atom_wma;
+    ERL_NIF_TERM atom_dema;
+    ERL_NIF_TERM atom_tema;
+    ERL_NIF_TERM atom_trima;
+    ERL_NIF_TERM atom_kama;
+    ERL_NIF_TERM atom_mama;
+    ERL_NIF_TERM atom_t3;
 
 } talib_st;
 
@@ -25,4 +34,6 @@ populate_output_double(
     int inLen,
     int initPos,
     const double *outDblValues);
+
+void load_moving_average_type(ERL_NIF_TERM arg, talib_st *atoms, TA_MAType *type);
 #endif
