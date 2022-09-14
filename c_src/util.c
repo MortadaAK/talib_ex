@@ -73,6 +73,30 @@ populate_output_double(
     }
     return enif_make_list_from_array(env, outTerms, inLen);
 }
+ERL_NIF_TERM
+populate_output_int(
+    ErlNifEnv *env,
+    talib_st *atoms,
+    int outBegIdx,
+    int inLen,
+    int initPos,
+    const int *outValues)
+{
+    ERL_NIF_TERM *outTerms[inLen];
+    int i;
+    for (i = initPos; i < inLen; i++)
+    {
+        if (i < outBegIdx)
+        {
+            outTerms[i] = atoms->atom_nan;
+        }
+        else
+        {
+            outTerms[i] = enif_make_int(env, outValues[i - outBegIdx]);
+        }
+    }
+    return enif_make_list_from_array(env, outTerms, inLen);
+}
 void load_moving_average_type(ERL_NIF_TERM arg, talib_st *atoms, TA_MAType *type)
 {
 

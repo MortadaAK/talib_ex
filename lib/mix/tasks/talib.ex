@@ -221,6 +221,867 @@ defmodule Mix.Tasks.Talib do
       ]
     },
     %{
+      name: "cdl2_crows",
+      doc: "Two Crows",
+      target: "TA_CDL2CROWS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_black_crows",
+      doc: "Three Black Crows",
+      target: "TA_CDL3BLACKCROWS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_inside",
+      doc: "Three Inside Up/Down",
+      target: "TA_CDL3INSIDE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_line_strike",
+      doc: "Three-Line Strike",
+      target: "TA_CDL3LINESTRIKE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_outside",
+      doc: "Three Outside Up/Down",
+      target: "TA_CDL3OUTSIDE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_stars_in_south",
+      doc: "Three Stars In The South",
+      target: "TA_CDL3STARSINSOUTH",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl3_white_soldiers",
+      doc: "Three Advancing White Soldiers",
+      target: "TA_CDL3WHITESOLDIERS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_abandoned_baby",
+      doc: "Abandoned Baby",
+      target: "TA_CDLABANDONEDBABY",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :penetration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_advance_block",
+      doc: "Advance Block",
+      target: "TA_CDLADVANCEBLOCK",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_belt_hold",
+      doc: "Belt-hold",
+      target: "TA_CDLBELTHOLD",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_breakaway",
+      doc: "Breakaway",
+      target: "TA_CDLBREAKAWAY",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_closing_marubozu",
+      doc: "Closing Marubozu",
+      target: "TA_CDLCLOSINGMARUBOZU",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_conceal_baby_swallow",
+      doc: "Concealing Baby Swallow",
+      target: "TA_CDLCONCEALBABYSWALL",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_counterattack",
+      doc: "Counterattack",
+      target: "TA_CDLCOUNTERATTACK",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_dark_cloud_cover",
+      doc: "Dark Cloud Cover",
+      target: "TA_CDLDARKCLOUDCOVER",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :peneration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_doji",
+      doc: "Doji",
+      target: "TA_CDLDOJI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_doji_star",
+      doc: "Doji Star",
+      target: "TA_CDLDOJISTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_dragonfly_doji",
+      doc: "Dragonfly Doji",
+      target: "TA_CDLDRAGONFLYDOJI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_engulfing",
+      doc: "Engulfing Pattern",
+      target: "TA_CDLENGULFING",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_evening_doji_star",
+      doc: "Evening Doji Star",
+      target: "TA_CDLEVENINGDOJISTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :peneration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_evening_star",
+      doc: "Evening Star",
+      target: "TA_CDLEVENINGSTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :peneration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_gap_side_side_white",
+      doc: "Up/Down-gap side-by-side white lines",
+      target: "TA_CDLGAPSIDESIDEWHITE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_gravestone_doji",
+      doc: "Gravestone Doji",
+      target: "TA_CDLGRAVESTONEDOJI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_hammer",
+      doc: "Hammer",
+      target: "TA_CDLHAMMER",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_hanging_man",
+      doc: "Hanging Man",
+      target: "TA_CDLHANGINGMAN",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_harami",
+      doc: "Harami Pattern",
+      target: "TA_CDLHARAMI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_harami_cross",
+      doc: "Harami Cross Pattern",
+      target: "TA_CDLHARAMICROSS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_highwave",
+      doc: "High-Wave Candle",
+      target: "TA_CDLHIGHWAVE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_hikkake",
+      doc: "Hikkake Pattern",
+      target: "TA_CDLHIKKAKE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_hikkake_mod",
+      doc: "Modified Hikkake Pattern",
+      target: "TA_CDLHIKKAKEMOD",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_homing_pigeon",
+      doc: "Homing Pigeon",
+      target: "TA_CDLHOMINGPIGEON",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_identical_3_crows",
+      doc: "Identical Three Crows",
+      target: "TA_CDLIDENTICAL3CROWS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_inneck",
+      doc: "In-Neck Pattern",
+      target: "TA_CDLINNECK",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_inverted_hammer",
+      doc: "Inverted Hammer",
+      target: "TA_CDLINVERTEDHAMMER",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_kicking",
+      doc: "Kicking",
+      target: "TA_CDLKICKING",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_kicking_by_length",
+      doc: "Kicking - bull/bear determined by the longer marubozu",
+      target: "TA_CDLKICKINGBYLENGTH",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_ladder_bottom",
+      doc: "Ladder Bottom",
+      target: "TA_CDLLADDERBOTTOM",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_long_legged_doji",
+      doc: "Long Legged Doji",
+      target: "TA_CDLLONGLEGGEDDOJI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_long_line",
+      doc: "Long Line Candle",
+      target: "TA_CDLLONGLINE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_marubozu",
+      doc: "Marubozu",
+      target: "TA_CDLMARUBOZU",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_matching_low",
+      doc: "Matching Low",
+      target: "TA_CDLMATCHINGLOW",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_mat_hold",
+      doc: "Mat Hold",
+      target: "TA_CDLMATHOLD",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :penetration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_morning_doji_star",
+      doc: "Morning Doji Star",
+      target: "TA_CDLMORNINGDOJISTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :penetration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_morning_star",
+      doc: "Morning Star",
+      target: "TA_CDLMORNINGSTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array},
+        %{name: :penetration, type: :double}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_on_neck",
+      doc: "On-Neck Pattern",
+      target: "TA_CDLONNECK",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_piercing",
+      doc: "Piercing Pattern",
+      target: "TA_CDLPIERCING",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_rickshaw_man",
+      doc: "Rickshaw Man",
+      target: "TA_CDLRICKSHAWMAN",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_rise_fall_3_methods",
+      doc: "Rickshaw Man",
+      target: "TA_CDLRISEFALL3METHODS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_separating_lines",
+      doc: "Separating Lines",
+      target: "TA_CDLSEPARATINGLINES",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_shooting_star",
+      doc: "Shooting Star",
+      target: "TA_CDLSHOOTINGSTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_short_line",
+      doc: "Short Line Candle",
+      target: "TA_CDLSHORTLINE",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_spinning_top",
+      doc: "Spinning Top",
+      target: "TA_CDLSPINNINGTOP",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_stalled_pattern",
+      doc: "Stalled Pattern",
+      target: "TA_CDLSTALLEDPATTERN",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_stick_sandwich",
+      doc: "Stick Sandwich",
+      target: "TA_CDLSTICKSANDWICH",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_takuri",
+      doc: "Takuri (Dragonfly Doji with very long lower shadow)",
+      target: "TA_CDLTAKURI",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_tasuki_gap",
+      doc: "Tasuki Gap",
+      target: "TA_CDLTASUKIGAP",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_thrusting",
+      doc: "Thrusting Pattern",
+      target: "TA_CDLTHRUSTING",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_tri_star",
+      doc: "Tristar Pattern",
+      target: "TA_CDLTRISTAR",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_unique_3_river",
+      doc: "Unique 3 River",
+      target: "TA_CDLUNIQUE3RIVER",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_upside_gap_2_crows",
+      doc: "Upside Gap Two Crows",
+      target: "TA_CDLUPSIDEGAP2CROWS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
+      name: "cdl_upside_downside_gap_3_methods",
+      doc: "Upside/Downside Gap Three Methods",
+      target: "TA_CDLXSIDEGAP3METHODS",
+      inputs: [
+        %{name: :open, type: :double_array},
+        %{name: :high, type: :double_array},
+        %{name: :low, type: :double_array},
+        %{name: :close, type: :double_array}
+      ],
+      outputs: [
+        %{name: :list, type: :integer_array}
+      ]
+    },
+    %{
       name: "sma",
       doc: "Simple Moving Average",
       target: "TA_SMA",
@@ -258,7 +1119,7 @@ defmodule Mix.Tasks.Talib do
 
           @c_dir
           |> Path.join("func_#{name}.c")
-          |> File.write!(content)
+          |> write_file(content)
 
           {[binding | bindings], [header | headers], [nif_function | nif_functions],
            [elixir_function | elixir_functions]}
@@ -285,7 +1146,7 @@ defmodule Mix.Tasks.Talib do
 
     @c_dir
     |> Path.join("funcs.h")
-    |> File.write!(content)
+    |> write_file(content)
   end
 
   defp build_function(%{name: name, doc: doc, target: target, inputs: inputs, outputs: outputs}) do
@@ -369,6 +1230,9 @@ defmodule Mix.Tasks.Talib do
       Enum.map(outputs, fn
         %{name: name, type: :double_array} ->
           "#{name} :: [number()|:nan]"
+
+        %{name: name, type: :integer_array} ->
+          "#{name} :: [integer()|:nan]"
       end)
 
     """
@@ -434,7 +1298,9 @@ defmodule Mix.Tasks.Talib do
           /* generate error message */
           TA_SetRetCodeInfo(retCode, &info);
           results = enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, info.infoStr, ERL_NIF_LATIN1));
-      } else {
+      }
+      else
+      {
         results = enif_make_tuple#{outputs_length + 1}(
           env,
           atoms->atom_ok,
@@ -519,31 +1385,31 @@ defmodule Mix.Tasks.Talib do
 
     destroy = """
       if (#{name} != NULL)
-        {
-          enif_free(#{name});
-          #{name} = NULL;
-        }
+      {
+        enif_free(#{name});
+        #{name} = NULL;
+      }
     """
 
     check =
       if Enum.any?(prev_vars, &(&1.type == :double_array)) do
         """
-        if (inLen != 0 && tmpLen != inLen)
-        {
-          #{destroy_inputs(prev_vars)}
-          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "#{input_name} is a list with different length", ERL_NIF_LATIN1));
-        }
+          if (inLen != 0 && tmpLen != inLen)
+          {
+            #{destroy_inputs(prev_vars)}
+            return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "#{input_name} is a list with different length", ERL_NIF_LATIN1));
+          }
         """
       else
         """
-        if (tmpLen == 0)
-        {
-          #{destroy_inputs(prev_vars)}
-          return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "#{input_name} is an empty list", ERL_NIF_LATIN1));
-        }
+          if (tmpLen == 0)
+          {
+            #{destroy_inputs(prev_vars)}
+            return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "#{input_name} is an empty list", ERL_NIF_LATIN1));
+          }
 
-        inLen = tmpLen;
-        endIdx = tmpLen - 1;
+          inLen = tmpLen;
+          endIdx = tmpLen - 1;
         """
       end
 
@@ -558,8 +1424,7 @@ defmodule Mix.Tasks.Talib do
         }
 
         #{name} = construct_array_from_list(env, argv[#{pos}], &tmpLen);
-
-        #{check}
+      #{check}
       """,
       destroy: destroy,
       name: name
@@ -583,6 +1448,29 @@ defmodule Mix.Tasks.Talib do
 
       """,
       load: "      populate_output_double(env, atoms, outBegIdx, inLen, 0, #{name})",
+      name: name,
+      binding: "#{name}[0]",
+      destroy: """
+        if (#{name} != NULL)
+        {
+          enif_free(#{name});
+          #{name} = NULL;
+        }
+      """
+    }
+  end
+
+  defp declare_output(%{type: :integer_array}, pos, _prev_vars) do
+    name = "out#{pos}"
+
+    %{
+      type: :double_array,
+      typec: "  int *#{name};",
+      declare: """
+      #{name} = (int *)enif_alloc((inLen) * sizeof(int));
+
+      """,
+      load: "      populate_output_int(env, atoms, outBegIdx, inLen, 0, #{name})",
       name: name,
       binding: "#{name}[0]",
       destroy: """
@@ -658,7 +1546,7 @@ defmodule Mix.Tasks.Talib do
 
     @c_dir
     |> Path.join("talib.c")
-    |> File.write!(content)
+    |> write_file(content)
   end
 
   def generate_nif_module(nif_functions) do
@@ -679,10 +1567,11 @@ defmodule Mix.Tasks.Talib do
           end
       """
       |> Code.format_string!()
+      |> to_string()
 
     @module_dir
     |> Path.join("nif.ex")
-    |> File.write!(content)
+    |> write_file(content)
   end
 
   def generate_elixir_module(functions) do
@@ -698,9 +1587,22 @@ defmodule Mix.Tasks.Talib do
         end
       ]
       |> Code.format_string!()
+      |> to_string()
 
     @module_dir
     |> Path.join("talib_ex.ex")
-    |> File.write!(content)
+    |> write_file(content)
+  end
+
+  defp write_file(path, content) do
+    if !File.exists?(path) do
+      File.write!(path, content)
+    else
+      prev = File.read!(path)
+
+      unless String.equivalent?(prev, content) do
+        File.write!(path, content)
+      end
+    end
   end
 end
