@@ -10,7 +10,16 @@ defmodule TalibEx.MixProject do
       make_makefile: "Makefile",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      package: package()
+      package: package(),
+      # Docs
+      name: "TALibEX",
+      source_url: "https://github.com/MortadaAK/talib_ex",
+      homepage_url: "https://github.com/MortadaAK/talib_ex",
+      docs: [
+        # The main page in the docs
+        main: "TALibEX",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -25,11 +34,9 @@ defmodule TalibEx.MixProject do
     [files: ["lib", "LICENSE", "mix.exs", "README.md", "c_src/", "Makefile"]]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:ex_doc, "~> 0.28"}
     ]
   end
 end
