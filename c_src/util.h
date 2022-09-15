@@ -32,7 +32,6 @@ populate_output_double(
     talib_st *atoms,
     int outBegIdx,
     int inLen,
-    int initPos,
     const double *outDblValues);
 
 ERL_NIF_TERM
@@ -41,7 +40,6 @@ populate_output_int(
     talib_st *atoms,
     int outBegIdx,
     int inLen,
-    int initPos,
     const int *outDblValues);
 
 void load_moving_average_type(ERL_NIF_TERM arg, talib_st *atoms, TA_MAType *type);

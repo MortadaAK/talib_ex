@@ -82,7 +82,8 @@ defmodule Mix.Tasks.Talib do
         target: target
       })
 
-    binding = ~s[{"nif_#{name}", #{inputs_length}, ex_#{name}, 0}]
+    # ERL_NIF_DIRTY_JOB_CPU_BOUND is used to schedule the nif in the dirty CPU
+    binding = ~s[{"nif_#{name}", #{inputs_length}, ex_#{name}, ERL_NIF_DIRTY_JOB_CPU_BOUND}]
 
     header = """
     ERL_NIF_TERM
@@ -245,12 +246,19 @@ defmodule Mix.Tasks.Talib do
       ERL_NIF_TERM results;
     #{Enum.map_join(vars, "\n", & &1.typec)}
     #{Enum.map_join(outputs, "\n", & &1.typec)}
+
+      /* inform erlang scheduler that we just started */
+      enif_consume_timeslice(env, 0);
+
       if (argc != #{inputs_length})
       {
         return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "should be called with #{inputs_length}", ERL_NIF_LATIN1));
       }
     #{Enum.map_join(vars, "\n", & &1.declare)}
     #{Enum.map_join(outputs, "\n", & &1.declare)}
+
+      /* inform erlang scheduler that we finished preparing the array */
+      enif_consume_timeslice(env, 10);
 
       /* call TA-Lib function */
       retCode = #{target}(
@@ -260,6 +268,9 @@ defmodule Mix.Tasks.Talib do
           &outBegIdx,
           &outNBElement,
           #{Enum.map_join(outputs, ",\n      ", &"&#{&1.binding}")});
+
+      /* inform erlang scheduler that we finished calculating */
+      enif_consume_timeslice(env, 90);
 
       /* generate results */
       if (retCode != TA_SUCCESS)
@@ -279,6 +290,7 @@ defmodule Mix.Tasks.Talib do
       /* clean up */
     #{destroy_inputs(vars)}
     #{Enum.map_join(outputs, "\n", & &1.destroy)}
+      enif_consume_timeslice(env, 100);
 
       /* return the results; */
       return results;
@@ -416,7 +428,7 @@ defmodule Mix.Tasks.Talib do
       #{name} = (double *)enif_alloc((inLen) * sizeof(double));
 
       """,
-      load: "      populate_output_double(env, atoms, outBegIdx, inLen, 0, #{name})",
+      load: "      populate_output_double(env, atoms, outBegIdx, inLen, #{name})",
       name: name,
       binding: "#{name}[0]",
       destroy: """
@@ -439,7 +451,7 @@ defmodule Mix.Tasks.Talib do
       #{name} = (int *)enif_alloc((inLen) * sizeof(int));
 
       """,
-      load: "      populate_output_int(env, atoms, outBegIdx, inLen, 0, #{name})",
+      load: "      populate_output_int(env, atoms, outBegIdx, inLen, #{name})",
       name: name,
       binding: "#{name}[0]",
       destroy: """

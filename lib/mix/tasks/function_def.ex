@@ -1159,7 +1159,7 @@ defmodule TalibEx.FunctionDef do
       target: "TA_MINUS_DI",
       inputs: [@high, @low, @close, @time_period1],
       outputs: [
-        %{name: :list, type: :integer_array}
+        %{name: :list, type: :double_array}
       ]
     },
     %{
@@ -1168,7 +1168,7 @@ defmodule TalibEx.FunctionDef do
       target: "TA_MINUS_DM",
       inputs: [@high, @low, @time_period1],
       outputs: [
-        %{name: :list, type: :integer_array}
+        %{name: :list, type: :double_array}
       ]
     },
     %{
@@ -1177,7 +1177,7 @@ defmodule TalibEx.FunctionDef do
       target: "TA_MOM",
       inputs: [@generic, @time_period1],
       outputs: [
-        %{name: :list, type: :integer_array}
+        %{name: :list, type: :double_array}
       ]
     },
     %{

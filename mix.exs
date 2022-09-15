@@ -22,18 +22,7 @@ defmodule TalibEx.MixProject do
   end
 
   defp package do
-    [
-      files: [
-        # These are the default files
-        "lib",
-        "LICENSE",
-        "mix.exs",
-        "README.md",
-        # You will need to add something like this.
-        "c_src/",
-        "Makefile"
-      ]
-    ]
+    [files: ["lib", "LICENSE", "mix.exs", "README.md", "c_src/", "Makefile"]]
   end
 
   # Run "mix help deps" to learn about dependencies.

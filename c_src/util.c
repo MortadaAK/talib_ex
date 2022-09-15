@@ -55,12 +55,12 @@ populate_output_double(
     talib_st *atoms,
     int outBegIdx,
     int inLen,
-    int initPos,
     const double *outValues)
 {
-    ERL_NIF_TERM *outTerms[inLen];
+    ERL_NIF_TERM result;
+    ERL_NIF_TERM *outTerms = enif_alloc(inLen * sizeof(ERL_NIF_TERM));
     int i;
-    for (i = initPos; i < inLen; i++)
+    for (i = 0; i < inLen; i++)
     {
         if (i < outBegIdx)
         {
@@ -71,7 +71,10 @@ populate_output_double(
             outTerms[i] = enif_make_double(env, outValues[i - outBegIdx]);
         }
     }
-    return enif_make_list_from_array(env, outTerms, inLen);
+    result = enif_make_list_from_array(env, outTerms, inLen);
+    enif_free(outTerms);
+    outTerms = NULL;
+    return result;
 }
 ERL_NIF_TERM
 populate_output_int(
@@ -79,12 +82,12 @@ populate_output_int(
     talib_st *atoms,
     int outBegIdx,
     int inLen,
-    int initPos,
     const int *outValues)
 {
-    ERL_NIF_TERM *outTerms[inLen];
+    ERL_NIF_TERM result;
+    ERL_NIF_TERM *outTerms = enif_alloc(inLen * sizeof(ERL_NIF_TERM));
     int i;
-    for (i = initPos; i < inLen; i++)
+    for (i = 0; i < inLen; i++)
     {
         if (i < outBegIdx)
         {
@@ -95,7 +98,10 @@ populate_output_int(
             outTerms[i] = enif_make_int(env, outValues[i - outBegIdx]);
         }
     }
-    return enif_make_list_from_array(env, outTerms, inLen);
+    result = enif_make_list_from_array(env, outTerms, inLen);
+    enif_free(outTerms);
+    outTerms = NULL;
+    return result;
 }
 void load_moving_average_type(ERL_NIF_TERM arg, talib_st *atoms, TA_MAType *type)
 {

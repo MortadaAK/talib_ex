@@ -4,6 +4,7 @@ ERLANG_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(),
 ERL_INTERFACE_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(erl_interface, lib)])' -s init stop -noshell)
 FILES =  $(shell ls c_src/*.c)
 CFLAGS += -I$(ERLANG_PATH)
+CFLAGS += -Wno-unused-parameter
 CC= gcc
 LDFLAGS += -lta_lib
 
