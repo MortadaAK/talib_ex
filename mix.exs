@@ -6,37 +6,45 @@ defmodule TalibEx.MixProject do
       app: :talib_ex,
       version: "0.1.0",
       elixir: "~> 1.13",
-      compilers: [:talib | Mix.compilers()],
+      compilers: [:elixir_make | Mix.compilers()],
       make_makefile: "Makefile",
       start_permanent: Mix.env() == :prod,
+      description: description(),
       deps: deps(),
-      package: package(),
-      # Docs
-      name: "TALibEX",
-      source_url: "https://github.com/MortadaAK/talib_ex",
-      homepage_url: "https://github.com/MortadaAK/talib_ex",
-      docs: [
-        # The main page in the docs
-        main: "TALibEX",
-        extras: ["README.md"]
-      ]
+      package: package()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
-    [
-      extra_applications: [:logger]
-    ]
+    []
   end
 
   defp package do
-    [files: ["lib", "LICENSE", "mix.exs", "README.md", "c_src/", "Makefile"]]
+    # Docs
+    [
+      name: "TALibEX",
+      source_url: "https://github.com/MortadaAK/talib_ex",
+      homepage_url: "https://github.com/MortadaAK/talib_ex",
+      links: %{
+        "GitHub" => "https://github.com/MortadaAK/talib_ex"
+      },
+      licenses: ["Apache-2.0"],
+      docs: [
+        main: "TALibEX",
+        extras: ["README.md"]
+      ],
+      files: ["lib", "LICENSE", "mix.exs", "README.md", "c_src/*.c", "c_src/*.h", "Makefile"]
+    ]
+  end
+
+  defp description do
+    "A NIF wrapper for TA-LIB."
   end
 
   defp deps do
     [
-      {:ex_doc, "~> 0.28"}
+      {:elixir_make, "~> 0.4", runtime: false},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end
 end

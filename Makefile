@@ -34,5 +34,4 @@ all:
 
 clean:
 	$(MIX) clean
-	$(RM) c_src/*.o
 	$(RM) priv/*.so
