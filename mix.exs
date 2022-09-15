@@ -6,7 +6,7 @@ defmodule TalibEx.MixProject do
       app: :talib_ex,
       version: "0.1.0",
       elixir: "~> 1.13",
-      compilers: Mix.compilers() ++ [:talib],
+      compilers: [:talib | Mix.compilers()],
       make_makefile: "Makefile",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
