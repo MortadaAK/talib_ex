@@ -27,9 +27,10 @@ ifneq ($(OS),Windows_NT)
 	LDFLAGS += -shared 
 endif
 
-.PHONY: all talib clean
+.PHONY: all clean
 
 all: 
+	@mkdir -p priv
 	$(CC) $(CFLAGS) $(FILES) $(LDFLAGS) -o priv/talib.so
 
 clean:
