@@ -1,7 +1,7 @@
 MIX = mix
 CFLAGS = -g -O3 -ansi -pedantic -Wall -Wextra
 ERLANG_PATH = $(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
-ERL_INTERFACE_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(erl_interface, lib)])' -s init stop -noshell)
+EI_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(ei, lib)])' -s init stop -noshell)
 FILES =  $(shell ls c_src/*.c)
 CFLAGS += -I$(ERLANG_PATH)
 CFLAGS += -Wno-unused-parameter
@@ -20,16 +20,16 @@ ifneq ($(OS),Windows_NT)
 	ifeq ($(shell uname),Linux)
 		CFLAGS  += -I/usr/include/ta-lib
 		LDFLAGS += -L/usr/lib
-		LDFLAGS += -L$(ERL_INTERFACE_PATH)
-		LDFLAGS += -lerl_interface 
+		LDFLAGS += -L$(EI_PATH)
+		LDFLAGS += -lei
 	endif
 
-	LDFLAGS += -shared 
+	LDFLAGS += -shared
 endif
 
 .PHONY: all clean
 
-all: 
+all:
 	@mkdir -p priv
 	$(CC) $(CFLAGS) $(FILES) $(LDFLAGS) -o priv/talib.so
 
