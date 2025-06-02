@@ -755,7 +755,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:pentration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Abandoned Baby
@@ -766,7 +766,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `pentration`: Percentage of penetration of a candle within another candle (minuimum `0`)
+  - `penetration`: Percentage of penetration of a candle within another candle (minuimum `0`)
 
   ---
   Outputs
@@ -782,7 +782,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:pentration, :double, %{min: 0})
+    |> Executer.load(:penetration, :double, %{min: 0})
     |> Executer.call(&Nif.nif_cdl_abandoned_baby/5)
   end
 
@@ -1833,7 +1833,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:pentration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Mat Hold
@@ -1844,7 +1844,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `pentration`: Percentage of penetration of a candle within another candle (minuimum `0`)
+  - `penetration`: Percentage of penetration of a candle within another candle (minuimum `0`)
 
   ---
   Outputs
@@ -1860,7 +1860,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:pentration, :double, %{min: 0})
+    |> Executer.load(:penetration, :double, %{min: 0})
     |> Executer.call(&Nif.nif_cdl_mat_hold/5)
   end
 
@@ -1870,7 +1870,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:pentration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Morning Doji Star
@@ -1881,7 +1881,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `pentration`: Percentage of penetration of a candle within another candle (minuimum `0`)
+  - `penetration`: Percentage of penetration of a candle within another candle (minuimum `0`)
 
   ---
   Outputs
@@ -1897,7 +1897,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:pentration, :double, %{min: 0})
+    |> Executer.load(:penetration, :double, %{min: 0})
     |> Executer.call(&Nif.nif_cdl_morning_doji_star/5)
   end
 
@@ -1907,7 +1907,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:pentration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Morning Star
@@ -1918,7 +1918,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `pentration`: Percentage of penetration of a candle within another candle (minuimum `0`)
+  - `penetration`: Percentage of penetration of a candle within another candle (minuimum `0`)
 
   ---
   Outputs
@@ -1934,7 +1934,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:pentration, :double, %{min: 0})
+    |> Executer.load(:penetration, :double, %{min: 0})
     |> Executer.call(&Nif.nif_cdl_morning_star/5)
   end
 

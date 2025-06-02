@@ -88,8 +88,8 @@ defmodule TalibEx.FunctionDef do
     doc:
       "Type of moving average. `sma` | `ema` | `wma` | `dema` | `tema` | `trima` | `kama` | `mama` | `t3`"
   }
-  @cdl_pentration %{
-    name: :pentration,
+  @cdl_penetration %{
+    name: :penetration,
     type: :double,
     min: 0,
     doc: "Percentage of penetration of a candle within another candle"
@@ -299,7 +299,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        @cdl_pentration
+        @cdl_penetration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -629,7 +629,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        @cdl_pentration
+        @cdl_penetration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -644,7 +644,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        @cdl_pentration
+        @cdl_penetration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -659,7 +659,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        @cdl_pentration
+        @cdl_penetration
       ],
       outputs: [
         %{name: :list, type: :integer_array}
