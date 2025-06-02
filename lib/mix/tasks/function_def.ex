@@ -368,7 +368,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        %{name: :peneration, type: :double}
+        %{name: :penetration, type: :double}
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -419,7 +419,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        %{name: :peneration, type: :double}
+        %{name: :penetration, type: :double}
       ],
       outputs: [
         %{name: :list, type: :integer_array}
@@ -434,7 +434,7 @@ defmodule TalibEx.FunctionDef do
         @high,
         @low,
         @close,
-        %{name: :peneration, type: :double}
+        %{name: :penetration, type: :double}
       ],
       outputs: [
         %{name: :list, type: :integer_array}

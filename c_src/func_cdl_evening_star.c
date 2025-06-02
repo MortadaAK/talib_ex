@@ -34,14 +34,14 @@ ex_cdl_evening_star(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
   }
   if (!enif_is_list(env, argv[0]))
   {
-  
+
     return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "open should be a list", ERL_NIF_LATIN1));
   }
 
   input0 = construct_array_from_list(env, argv[0], &tmpLen);
   if (tmpLen == 0)
   {
-    
+
     return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "open is an empty list", ERL_NIF_LATIN1));
   }
 
@@ -183,7 +183,7 @@ ex_cdl_evening_star(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
     input0 = NULL;
   }
 
-    return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "peneration should be an double", ERL_NIF_LATIN1));
+    return enif_make_tuple2(env, atoms->atom_error, enif_make_string(env, "penetration should be an double", ERL_NIF_LATIN1));
   }
   enif_get_double(env, argv[4], &input4);
 

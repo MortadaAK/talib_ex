@@ -978,7 +978,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:peneration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Dark Cloud Cover
@@ -989,7 +989,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `peneration`
+  - `penetration`
 
   ---
   Outputs
@@ -1005,7 +1005,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:peneration, :double)
+    |> Executer.load(:penetration, :double)
     |> Executer.call(&Nif.nif_cdl_dark_cloud_cover/5)
   end
 
@@ -1139,7 +1139,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:peneration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Evening Doji Star
@@ -1150,7 +1150,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `peneration`
+  - `penetration`
 
   ---
   Outputs
@@ -1166,7 +1166,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:peneration, :double)
+    |> Executer.load(:penetration, :double)
     |> Executer.call(&Nif.nif_cdl_evening_doji_star/5)
   end
 
@@ -1176,7 +1176,7 @@ defmodule TalibEx do
           | {:high, [number()]}
           | {:low, [number()]}
           | {:close, [number()]}
-          | {:peneration, number()}
+          | {:penetration, number()}
         ]) :: {:ok, list :: [integer() | :nan]} | {:error, term()}
   @doc """
   Evening Star
@@ -1187,7 +1187,7 @@ defmodule TalibEx do
   - `high`: High Price List
   - `low`: Low Price List
   - `close`: Close Price List
-  - `peneration`
+  - `penetration`
 
   ---
   Outputs
@@ -1203,7 +1203,7 @@ defmodule TalibEx do
     |> Executer.load(:high, :double_array)
     |> Executer.load(:low, :double_array)
     |> Executer.load(:close, :double_array)
-    |> Executer.load(:peneration, :double)
+    |> Executer.load(:penetration, :double)
     |> Executer.call(&Nif.nif_cdl_evening_star/5)
   end
 
