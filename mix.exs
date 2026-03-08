@@ -22,7 +22,7 @@ defmodule TalibEx.MixProject do
         "#{@github_url}/releases/download/v#{@version}/@{artefact_filename}",
       make_precompiler_filename: "talib",
       make_precompiler_priv_paths: ["talib.*"],
-      make_precompiler_nif_versions: [versions: ["2.16", "2.17"]],
+      make_precompiler_nif_versions: [versions: ["2.17"]],
       cc_precompiler: [
         cleanup: "clean"
       ]

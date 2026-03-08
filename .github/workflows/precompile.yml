@@ -87,16 +87,26 @@ jobs:
           export TA_LIB_DIR="${{ github.workspace }}/ta-lib-install"
           mix talib
 
-      - name: Build precompiled NIF
+      - name: Build precompiled NIF (native)
+        if: matrix.cross_pkg == ''
         run: |
           export TA_LIB_DIR="${{ github.workspace }}/ta-lib-install"
           export ELIXIR_MAKE_CACHE_DIR="$(pwd)/cache"
           export CC_PRECOMPILER_PRECOMPILE_ONLY_LOCAL=true
-          if [ -n "${{ matrix.cross_pkg }}" ]; then
-            export CC=${{ matrix.target }}-gcc
-          fi
           mkdir -p "${ELIXIR_MAKE_CACHE_DIR}"
           mix elixir_make.precompile
+
+      - name: Build precompiled NIF (cross-compile)
+        if: matrix.cross_pkg != ''
+        run: |
+          export TA_LIB_DIR="${{ github.workspace }}/ta-lib-install"
+          export CC=${{ matrix.target }}-gcc
+          make
+          mkdir -p cache
+          NIF_VERSION="2.17"
+          APP_VERSION="${{ env.TA_LIB_VERSION }}"
+          TARBALL="cache/talib_ex_nif-nif-${NIF_VERSION}-${{ matrix.target }}-${APP_VERSION}.tar.gz"
+          tar czf "${TARBALL}" priv/talib.so
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
