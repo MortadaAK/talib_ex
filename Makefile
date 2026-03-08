@@ -36,8 +36,6 @@ ifneq ($(OS),Windows_NT)
 		LDFLAGS += -dynamiclib -undefined dynamic_lookup
 	else
 		LDFLAGS += -shared
-		EI_PATH = $(shell erl -eval 'io:format("~s", [code:lib_dir(ei, lib)])' -s init stop -noshell)
-		LDFLAGS += -L$(EI_PATH) -lei
 	endif
 endif
 
