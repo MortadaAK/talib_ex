@@ -28,11 +28,16 @@ endif
 CC ?= cc
 MIX ?= mix
 
-.PHONY: generate json clean
+.PHONY: generate json function_def clean
 
-generate: talib_functions.json
-	elixir generate_function_def.exs
+# Full pipeline: introspect → JSON → FunctionDef → C/Elixir code
+# Note: mix talib requires project deps, so run it separately after mix deps.get
+generate: function_def
 	cd .. && $(MIX) talib
+
+# Generate FunctionDef only (no mix deps needed)
+function_def: talib_functions.json
+	elixir generate_function_def.exs
 
 talib_introspect: talib_introspect.c
 	$(CC) -o $@ $< $(TA_LIB_CFLAGS) $(TA_LIB_LIBS) -lm
