@@ -1,6 +1,6 @@
 defmodule Mix.Tasks.Talib do
-  @moduledoc "Generate c code fo ta-lib nif"
-  @shortdoc "Generate c code fo ta-lib nif"
+  @moduledoc "Generate C code and Elixir modules for ta-lib NIF"
+  @shortdoc "Generate C code and Elixir modules for ta-lib NIF"
 
   use Mix.Task
   @c_dir Path.join([__DIR__, "..", "..", "..", "c_src"]) |> Path.expand()
@@ -541,7 +541,7 @@ defmodule Mix.Tasks.Talib do
             @on_load :load_nifs
 
             def load_nifs do
-              :talib_ex
+              :talib_ex_nif
               |> :code.priv_dir()
               |> Path.join("talib")
               |> :erlang.load_nif(0)
