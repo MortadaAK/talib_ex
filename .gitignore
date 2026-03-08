@@ -28,13 +28,10 @@ talib_ex-*.tar
 /priv/*.so
 /priv/*.so.*
 
-# Generated files (produced by make -C tools generate)
+# Generated C files (produced by make -C tools generate)
 /c_src/func_*.c
 /c_src/funcs.h
 /c_src/talib.c
-/lib/nif.ex
-/lib/talib_ex.ex
-/lib/mix/tasks/function_def.ex
 
 # Tools build artifacts
 /tools/talib_introspect
