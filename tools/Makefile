@@ -6,17 +6,22 @@
 #   make -C tools clean       # Remove build artifacts
 
 # Detect ta-lib location
-TA_LIB_CFLAGS := $(shell pkg-config --cflags ta_lib 2>/dev/null)
-TA_LIB_LIBS := $(shell pkg-config --libs ta_lib 2>/dev/null)
+ifdef TA_LIB_DIR
+  TA_LIB_CFLAGS := -I$(TA_LIB_DIR)/include/ta-lib
+  TA_LIB_LIBS := -L$(TA_LIB_DIR)/lib -lta-lib
+else
+  TA_LIB_CFLAGS := $(shell pkg-config --cflags ta_lib 2>/dev/null)
+  TA_LIB_LIBS := $(shell pkg-config --libs ta_lib 2>/dev/null)
 
-ifeq ($(TA_LIB_CFLAGS),)
-  TA_LIB_PREFIX := $(shell brew --prefix ta-lib 2>/dev/null)
-  ifneq ($(TA_LIB_PREFIX),)
-    TA_LIB_CFLAGS := -I$(TA_LIB_PREFIX)/include/ta-lib
-    TA_LIB_LIBS := -L$(TA_LIB_PREFIX)/lib -lta-lib
-  else
-    TA_LIB_CFLAGS := -I/usr/include/ta-lib
-    TA_LIB_LIBS := -lta-lib
+  ifeq ($(TA_LIB_CFLAGS),)
+    TA_LIB_PREFIX := $(shell brew --prefix ta-lib 2>/dev/null)
+    ifneq ($(TA_LIB_PREFIX),)
+      TA_LIB_CFLAGS := -I$(TA_LIB_PREFIX)/include/ta-lib
+      TA_LIB_LIBS := -L$(TA_LIB_PREFIX)/lib -lta-lib
+    else
+      TA_LIB_CFLAGS := -I/usr/include/ta-lib
+      TA_LIB_LIBS := -lta-lib
+    endif
   endif
 endif
 
