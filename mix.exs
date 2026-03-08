@@ -44,6 +44,7 @@ defmodule TalibEx.MixProject do
       licenses: ["MIT"],
       files: [
         "lib",
+        "c_src",
         "LICENSE",
         "mix.exs",
         "README.md",

@@ -28,10 +28,6 @@ talib_ex-*.tar
 /priv/*.so
 /priv/*.so.*
 
-# Generated C files (produced by make -C tools generate)
-/c_src/func_*.c
-/c_src/funcs.h
-/c_src/talib.c
 
 # Tools build artifacts
 /tools/talib_introspect

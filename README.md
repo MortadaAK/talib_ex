@@ -66,7 +66,7 @@ All C and Elixir source files for the NIF bindings are code-generated from TA-Li
 - `lib/executer.ex` — parameter loading and function dispatch
 - `lib/mix/tasks/talib.ex` — mix task that generates C and Elixir code from `FunctionDef`
 
-**Generated files (gitignored):**
+**Generated files (committed, regenerated via `make -C tools generate`):**
 - `c_src/func_*.c`, `c_src/funcs.h`, `c_src/talib.c` — NIF C code
 - `lib/nif.ex` — NIF function stubs
 - `lib/talib_ex.ex` — public Elixir API module
